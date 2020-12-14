@@ -6,6 +6,7 @@ export class Products extends IdEntity {
     name = new StringColumn();
     imageUrl = new StringColumn();
     pacingFunction = new StringColumn('גורם אירוז');
+    SKU = new StringColumn('מק"ט');
     archive = new BoolColumn();
     constructor(context: Context) {
         super({
