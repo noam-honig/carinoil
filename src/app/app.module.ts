@@ -26,6 +26,9 @@ import { InputAreaComponent } from './common/input-area/input-area.component';
 import { DialogService } from './common/dialog';
 import { AdminGuard } from './users/roles';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProductsComponent } from './products/products.component';
+import { OrdersComponent } from './orders/orders.component';
+import { OrderDetailsComponent } from './order-details/order-details.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HomeComponent,
     YesNoQuestionComponent,
     SignInComponent,
-    InputAreaComponent
+    InputAreaComponent,
+    ProductsComponent,
+    OrdersComponent,
+    OrderDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +64,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   providers: [DialogService, AdminGuard],
   bootstrap: [AppComponent],
-  entryComponents: [YesNoQuestionComponent, SignInComponent, InputAreaComponent]
+  entryComponents: [YesNoQuestionComponent, SignInComponent, InputAreaComponent,OrderDetailsComponent]
 })
 export class AppModule { }

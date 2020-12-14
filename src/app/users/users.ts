@@ -42,7 +42,7 @@ export class Users extends IdEntity {
     }
     public static emptyPassword = 'password';
     name = new StringColumn({
-        caption: "name",
+        caption: "שם",
         validate: () => {
 
             if (!this.name.value || this.name.value.length < 2)
@@ -51,10 +51,10 @@ export class Users extends IdEntity {
     });
 
     realStoredPassword = new StringColumn({
-        dbName: 'password',
+        dbName: 'סיסמה',
         includeInApi: false
     });
-    password = new StringColumn({ caption: 'password', dataControlSettings: () => ({ inputType: 'password' }), serverExpression: () => this.realStoredPassword.value ? Users.emptyPassword : '' });
+    password = new StringColumn({ caption: 'סיסמה', dataControlSettings: () => ({ inputType: 'password' }), serverExpression: () => this.realStoredPassword.value ? Users.emptyPassword : '' });
 
     createDate = new changeDate('Create Date');
 

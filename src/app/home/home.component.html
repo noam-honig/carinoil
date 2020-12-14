@@ -1,3 +1,24 @@
-<p>
-  home works!
-</p>
+<h1 class="mat-h1">אנא בחר מוצרים להזמנה הבאה</h1>
+<mat-card *ngFor="let p of products" style="margin-top:8px">
+  <div style="display: flex;">
+    <div style="width:130px">
+      <img [src]="p.product.imageUrl.value" style="width:100%">
+    </div>
+    <div>
+      <h2 class="mat-h2">{{p.product.name.value}}</h2>
+      <div style="display:flex">
+        <button mat-icon-button (click)="p.add(1)">
+          <mat-icon>add</mat-icon>
+        </button>
+        <button mat-icon-button (click)="p.add(-1)">
+          <mat-icon>remove</mat-icon>
+        </button>
+        <data-control [column]="p.quantity"></data-control>
+      </div>
+    </div>
+  </div>
+
+
+</mat-card>
+
+<button mat-raised-button color="primary" (click)="submit()">שלח הזמנה</button>
