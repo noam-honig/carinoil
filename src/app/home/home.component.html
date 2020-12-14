@@ -6,6 +6,7 @@
     </div>
     <div>
       <h2 class="mat-h2">{{p.product.name.value}}</h2>
+      <span>גורם אירוז: {{p.product.pacingFunction.displayValue}}</span>
       <div style="display:flex">
         <button mat-icon-button (click)="p.add(1)">
           <mat-icon>add</mat-icon>

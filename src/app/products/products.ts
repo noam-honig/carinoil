@@ -5,20 +5,21 @@ import { Roles } from '../users/roles';
 export class Products extends IdEntity {
     name = new StringColumn();
     imageUrl = new StringColumn();
+    pacingFunction = new StringColumn('גורם אירוז');
     archive = new BoolColumn();
-    constructor(context:Context) {
+    constructor(context: Context) {
         super({
             name: "Products",
             allowApiInsert: Roles.admin,
             allowApiUpdate: Roles.admin,
             allowApiRead: true,
-            apiDataFilter:()=>{
+            apiDataFilter: () => {
                 if (!context.isAllowed(Roles.admin))
-                return this.archive.isEqualTo(false);
+                    return this.archive.isEqualTo(false);
             },
 
-            defaultOrderBy:()=>[this.archive,this.name]
-            
+            defaultOrderBy: () => [this.archive, this.name]
+
         });
     }
 }
