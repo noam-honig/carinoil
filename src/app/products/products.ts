@@ -1,8 +1,9 @@
-import { IdEntity, StringColumn, EntityClass, BoolColumn, Context } from '@remult/core';
+import { IdEntity, StringColumn, EntityClass, BoolColumn, Context, NumberColumn } from '@remult/core';
 import { Roles } from '../users/roles';
 
 @EntityClass
 export class Products extends IdEntity {
+    seder = new NumberColumn({ caption: "סדר", dataControlSettings: () => ({ width: '50px'}) });
     name = new StringColumn();
     imageUrl = new StringColumn();
     pacingFunction = new StringColumn('גורם אירוז');
@@ -19,7 +20,7 @@ export class Products extends IdEntity {
                     return this.archive.isEqualTo(false);
             },
 
-            defaultOrderBy: () => [this.archive, this.name]
+            defaultOrderBy: () => [this.archive, this.seder, this.name]
 
         });
     }

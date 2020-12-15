@@ -19,17 +19,34 @@ export class HomeComponent implements OnInit {
     this.products = (await this.context.for(Products).find({ where: x => x.archive.isEqualTo(false) })).map(x => new item(x));
   }
   async submit() {
-    let name = new StringColumn('שם המזמין');
+    let items = this.products.filter(p => p.quantity.value > 0).map(p => ({ product: p.product.id.value, quantity: p.quantity.value }));
+    if (items.length == 0) {
+      await this.context.openDialog(YesNoQuestionComponent, x => x.args = {
+        message: 'לא נבחרו מוצאים, אנא בחרו מוצרים',
+        isAQuestion: false
+      })
+      return;
+    }
+    var order = this.context.for(Orders).create();
+    order.name.value = localStorage.getItem('name');
+    order.phone.value = localStorage.getItem('phone');
+    order.items.value = JSON.stringify(this.products.filter(p => p.quantity.value > 0).map(p => ({ product: p.product.id.value, quantity: p.quantity.value })))
     await this.context.openDialog(InputAreaComponent, x => x.args = {
       title: 'שלח הזמנה',
-      columnSettings: () => [name],
+      columnSettings: () => [
+        order.name,
+        order.phone,
+        order.comment
+      ],
       ok: async () => {
-        await Orders.SubmitOrder(name.value, this.products.filter(p => p.quantity.value > 0).map(p => ({ product: p.product.id.value, quantity: p.quantity.value })));
+        await order.save();
+        localStorage.setItem('name',order.name.value);
+        localStorage.setItem('phone',order.phone.value);
         await this.context.openDialog(YesNoQuestionComponent, x => x.args = {
-            message:'הזמתנך התקבלה, תודה רבה',
-            isAQuestion:false
+          message: 'הזמתנך התקבלה, תודה רבה',
+          isAQuestion: false
         });
-        window.location.href='https://www.carino.co.il'
+        window.location.href = 'https://www.carino.co.il'
       }
     })
   }

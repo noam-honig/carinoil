@@ -1,25 +1,31 @@
-<h1 class="mat-h1">אנא בחר מוצרים להזמנה הבאה</h1>
-<mat-card *ngFor="let p of products" style="margin-top:8px">
-  <div style="display: flex;">
-    <div style="width:130px">
-      <img [src]="p.product.imageUrl.value" style="width:100%">
-    </div>
-    <div>
-      <h2 class="mat-h2">{{p.product.name.value}}</h2>
-      <span>גורם אירוז: {{p.product.pacingFunction.displayValue}}</span>
-      <div style="display:flex">
-        <button mat-icon-button (click)="p.add(1)">
-          <mat-icon>add</mat-icon>
-        </button>
-        <button mat-icon-button (click)="p.add(-1)">
-          <mat-icon>remove</mat-icon>
-        </button>
-        <data-control [column]="p.quantity"></data-control>
+<div class="full-page">
+  <h1 class="mat-h1">אנא בחר מוצרים להזמנה הבאה</h1>
+  <div class="grow-item">
+  <mat-card *ngFor="let p of products" style="margin-top:8px" >
+    <div style="display: flex;">
+      <div style="width:130px">
+        <img [src]="p.product.imageUrl.value" style="width:100%;max-height: 150px;
+      object-fit: scale-down;">
+      </div>
+      <div>
+        <h2 class="mat-h2">{{p.product.name.value}}</h2>
+        <div *ngIf="p.product.SKU.value">מק"ט: {{p.product.SKU.displayValue}}</div>
+        <div>גורם אירוז: {{p.product.pacingFunction.displayValue}}</div>
+        <div style="display:flex">
+          <button mat-icon-button (click)="p.add(1)">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button mat-icon-button (click)="p.add(-1)">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <data-control [column]="p.quantity"></data-control>
+        </div>
       </div>
     </div>
-  </div>
 
 
-</mat-card>
+  </mat-card>
+</div>
 
-<button mat-raised-button color="primary" (click)="submit()">שלח הזמנה</button>
+  <button mat-raised-button color="primary" (click)="submit()">שלח הזמנה 👍</button>
+</div>
