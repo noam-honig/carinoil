@@ -30,18 +30,21 @@ export class HomeComponent implements OnInit {
     var order = this.context.for(Orders).create();
     order.name.value = localStorage.getItem('name');
     order.phone.value = localStorage.getItem('phone');
+    order.store.value = localStorage.getItem('store');
     order.items.value = JSON.stringify(this.products.filter(p => p.quantity.value > 0).map(p => ({ product: p.product.id.value, quantity: p.quantity.value })))
     await this.context.openDialog(InputAreaComponent, x => x.args = {
       title: 'שלח הזמנה',
       columnSettings: () => [
         order.name,
+        order.store,
         order.phone,
         order.comment
       ],
       ok: async () => {
         await order.save();
-        localStorage.setItem('name',order.name.value);
-        localStorage.setItem('phone',order.phone.value);
+        localStorage.setItem('name', order.name.value);
+        localStorage.setItem('phone', order.phone.value);
+        localStorage.setItem('store', order.store.value);
         await this.context.openDialog(YesNoQuestionComponent, x => x.args = {
           message: 'הזמתנך התקבלה, תודה רבה',
           isAQuestion: false

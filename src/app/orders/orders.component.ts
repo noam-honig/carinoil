@@ -3,6 +3,7 @@ import { Context } from '@remult/core';
 import { OrderDetails, Orders, PhoneColumn } from './orders';
 import { OrderDetailsComponent } from '../order-details/order-details.component';
 import { Products } from '../products/products';
+import { YesNoQuestionComponent } from '../common/yes-no-question/yes-no-question.component';
 
 @Component({
   selector: 'app-orders',
@@ -16,6 +17,8 @@ export class OrdersComponent implements OnInit {
   }
   orders = this.context.for(Orders).gridSettings({
     allowUpdate: true,
+    allowDelete: true,
+    confirmDelete: async (r) => await this.context.openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
     columnSettings: o => [
       { column: o.name, readOnly: true },
       { column: o.handled, width: '55px' },
@@ -35,7 +38,7 @@ export class OrdersComponent implements OnInit {
       {
         icon: 'speaker_notes'
         , showInLine: true,
-        textInMenu:o=> 'שלח ווטסאפ ל'+o.name.value,
+        textInMenu: o => 'שלח ווטסאפ ל' + o.name.value,
         click: async (o) => {
           let message = 'שלום ' + o.name.value + '\r\nאלו הפריטים שהזמנת:\r\n';
           for (const d of await this.context.for(OrderDetails).find({ where: od => od.orderId.isEqualTo(o.id) })) {

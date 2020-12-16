@@ -34,14 +34,14 @@ export class AppComponent {
   }
   signInText() {
     if (this.context.user)
-      return this.context.user.name;
-    return 'Sign in';
+      return 'שלום ' + this.context.user.name;
+    return 'כניסה';
   }
   async signIn() {
     if (!this.context.user) {
       this.dialog.open(SignInComponent);
     } else {
-      if (await this.dialogService.yesNoQuestion("Would you like to sign out?")) {
+      if (await this.dialogService.yesNoQuestion("לצאת מהמערכת?")) {
         this.sessionManager.signout();
         this.router.navigate(['/']);
       }
@@ -62,7 +62,9 @@ export class AppComponent {
       }
       else {
         if (this.activeRoute.firstChild.routeConfig)
-          return this.activeRoute.firstChild.routeConfig.path;
+          if (this.activeRoute.firstChild.routeConfig.path == 'בית')
+            return '';
+        return this.activeRoute.firstChild.routeConfig.path;
       }
     return 'carinoil';
   }

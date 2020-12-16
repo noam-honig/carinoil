@@ -1,7 +1,7 @@
 <div class="full-page">
-  <h1 class="mat-h1">אנא בחר מוצרים להזמנה הבאה</h1>
+  <h1 class="mat-h1" style="color:white;background-color:#7EC4ED;padding:10px">אנא בחרו מוצרים להזמנה הבאה</h1>
   <div class="grow-item">
-  <mat-card *ngFor="let p of products" style="margin-top:8px" >
+  <mat-card *ngFor="let p of products" style="margin-bottom:8px" >
     <div style="display: flex;">
       <div style="width:130px">
         <img [src]="p.product.imageUrl.value" style="width:100%;max-height: 150px;
@@ -27,5 +27,5 @@
   </mat-card>
 </div>
 
-  <button mat-raised-button color="primary" (click)="submit()">שלח הזמנה 👍</button>
+  <button mat-raised-button style="color:white;background-color:#7EC4ED"  (click)="submit()"><span class="mat-h1" > שלחו הזמנה 👍</span></button>
 </div>

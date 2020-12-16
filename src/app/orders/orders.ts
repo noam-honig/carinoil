@@ -10,6 +10,7 @@ export class Orders extends IdEntity {
 
         }
     });
+    store = new StringColumn("חנות");
     handled = new BoolColumn("טיפלתי בהזמנה");
     comment = new StringColumn("הערות");
     phone = new PhoneColumn();
@@ -21,6 +22,7 @@ export class Orders extends IdEntity {
             allowApiUpdate: Roles.admin,
             allowApiInsert: true,
             allowApiRead: Roles.admin,
+            allowApiDelete:Roles.admin,
             defaultOrderBy: () => [{ column: this.createDate, descending: true }],
             saving: async () => {
                 if (this.isNew() && context.onServer) {
