@@ -22,6 +22,7 @@ export class OrdersComponent implements OnInit {
     columnSettings: o => [
       { column: o.name, readOnly: true },
       { column: o.handled, width: '55px' },
+      { column: o.store, readOnly: true },
       { column: o.comment, readOnly: true },
       { column: o.phone, readOnly: true },
       { column: o.createDate, readOnly: true },
