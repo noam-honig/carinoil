@@ -18,6 +18,7 @@ export class OrdersComponent implements OnInit {
   orders = this.context.for(Orders).gridSettings({
     allowUpdate: true,
     allowDelete: true,
+    numOfColumnsInGrid:6,
     confirmDelete: async (r) => await this.context.openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
     columnSettings: o => [
       { column: o.name, readOnly: true },
