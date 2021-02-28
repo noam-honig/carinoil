@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   constructor(private context: Context) { }
   products: item[];
   async ngOnInit() {
-    this.products = (await this.context.for(Products).find({ where: x => x.archive.isEqualTo(false) })).map(x => new item(x));
+    this.products = (await this.context.for(Products).find({ where: x => x.archive.isEqualTo(false), limit: 200 })).map(x => new item(x));
   }
   async submit() {
     let items = this.products.filter(p => p.quantity.value > 0).map(p => ({ product: p.product.id.value, quantity: p.quantity.value }));
