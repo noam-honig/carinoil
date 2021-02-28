@@ -14,7 +14,7 @@ export class OrderDetailsComponent implements OnInit {
   args: { order: Orders };
   details: OrderDetails[];
   async ngOnInit() {
-    this.details = await this.context.for(OrderDetails).find({ where: x => x.orderId.isEqualTo(this.args.order.id) })
+    this.details = await this.context.for(OrderDetails).find({ where: x => x.orderId.isEqualTo(this.args.order.id), limit: 100 })
 
   }
   getProduct(d: OrderDetails) {
