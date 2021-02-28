@@ -26,7 +26,6 @@
                 "$tsc"
             ]
         },
-     
         {
             "type": "npm",
             "script": "node-serve",
@@ -36,6 +35,16 @@
             "presentation": {
                 "group": "groupA"
             },
+            "isBackground": true
+        },
+        {
+            "type": "npm",
+            "script": "ng-serve-noam-ip-10.0.0.6",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "label": "npm: ng-serve-noam-ip-10.0.0.6",
+            "detail": "ng serve --host 10.0.0.6",
             "isBackground": true
         }
     ]

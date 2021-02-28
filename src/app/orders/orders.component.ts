@@ -18,7 +18,7 @@ export class OrdersComponent implements OnInit {
   orders = this.context.for(Orders).gridSettings({
     allowUpdate: true,
     allowDelete: true,
-    numOfColumnsInGrid:6,
+    numOfColumnsInGrid: 6,
     confirmDelete: async (r) => await this.context.openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
     columnSettings: o => [
       { column: o.name, readOnly: true },
@@ -43,10 +43,13 @@ export class OrdersComponent implements OnInit {
         textInMenu: o => 'שלח ווטסאפ ל' + o.name.value,
         click: async (o) => {
           let message = 'שלום ' + o.name.value + '\r\nאלו הפריטים שהזמנת:\r\n';
-          for (const d of await this.context.for(OrderDetails).find({ where: od => od.orderId.isEqualTo(o.id) })) {
+          for (const d of await this.context.for(OrderDetails).find({ where: od => od.orderId.isEqualTo(o.id), limit: 100 })) {
             message += d.quantity.value + " x " + (await (await this.context.for(Products).lookupAsync(d.product)).name.value) + "\r\n";
           }
-          PhoneColumn.sendWhatsappToPhone(o.phone.value, message, this.context);
+          setTimeout(() => {
+            PhoneColumn.sendWhatsappToPhone(o.phone.value, message, this.context);
+          }, 10);
+
         }
       },
       {
