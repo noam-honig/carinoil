@@ -10,12 +10,15 @@ import { ShowDialogOnErrorErrorHandler } from './common/dialog';
 import { ProductsComponent } from './products/products.component';
 import { OrdersComponent } from './orders/orders.component';
 import { JwtModule } from '@auth0/angular-jwt';
+import { CustomersComponent } from './customers/customers.component';
 
 
 const routes: Routes = [
   { path: 'בית', component: HomeComponent },
   { path: 'הזמנות', component: OrdersComponent, canActivate: [AdminGuard] },
   { path: 'מוצרים', component: ProductsComponent, canActivate: [AdminGuard] },
+  { path: 'לקוחות', component: CustomersComponent, canActivate: [AdminGuard] },
+
   { path: 'משתמשים', component: UsersComponent, canActivate: [AdminGuard] },
 
   { path: '', redirectTo: '/בית', pathMatch: 'full' },

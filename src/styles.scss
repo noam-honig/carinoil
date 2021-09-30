@@ -1,10 +1,9 @@
 @import "~@angular/material/theming";
 
-
 $custom-typography: mat-typography-config(
-  $font-family: 'Heebo, Arial, Helvetica, sans-serif',
+  $font-family: "Heebo, Arial, Helvetica, sans-serif",
   $headline: mat-typography-level(24px, 48px, 400),
-  $body-1: mat-typography-level(16px, 24px, 500)
+  $body-1: mat-typography-level(16px, 24px, 500),
 );
 
 // Plus imports for other components in your app.
@@ -65,4 +64,25 @@ body {
   flex-grow: 1;
   flex-shrink: 0;
   overflow-y: auto;
+}
+
+.table-bordered {
+  border: 1px solid #ddd;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.table-bordered > tr > th,
+.table-bordered > tr > td {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+.table-bordered > tr > th {
+  border-bottom-width: 2px;
+}
+
+.quantity {
+  div {
+      //width: 100px;
+  }
 }

@@ -11,6 +11,7 @@ import * as helmet from 'helmet';
 import * as jwt from 'express-jwt';
 import * as compression from 'compression';
 
+
 import '../app/app.module';
 import { Products } from '../app/products/products';
 import { OrderDetails } from '../app/orders/orders';
@@ -51,11 +52,6 @@ async function startup() {
         }
     });
 
-    for (let p of await remult.repo(OrderDetails).find({ where: o => o.orderId.isEqualTo("caf99c93-20c1-4ecb-9241-e6c46009e1d4") })) {
-        console.log({
-            ...p
-        });
-    }
 
     let port = process.env.PORT || 3000;
     app.listen(port);

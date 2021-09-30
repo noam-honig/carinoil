@@ -1,5 +1,5 @@
 import { DataControl } from '@remult/angular';
-import { Entity, Field, IdEntity } from 'remult';
+import { Entity, Field, IdEntity, IntegerField } from 'remult';
 import { Roles } from '../users/roles';
 
 @Entity<Products>("Products", {
@@ -23,7 +23,9 @@ export class Products extends IdEntity {
     pacingFunction: string;
     @Field({ caption: 'מק"ט' })
     SKU: string;
-    @Field()
+    @IntegerField({ caption: 'מספר ברווחית' })
+    rivhitId: number;
+    @Field({caption:'אל תציג'})
     archive: boolean;
 
 

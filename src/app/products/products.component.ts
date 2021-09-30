@@ -14,7 +14,8 @@ export class ProductsComponent implements OnInit {
   products = new GridSettings(this.remult.repo(Products), {
     allowCrud: true,
     knowTotalRows: true,
-    rowsInPage: 100
+    rowsInPage: 100,
+    numOfColumnsInGrid:99
   });
 
   ngOnInit() {

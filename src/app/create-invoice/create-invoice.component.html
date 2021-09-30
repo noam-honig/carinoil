@@ -1,0 +1,26 @@
+<p>צור חשבונית</p>
+<mat-dialog-content>
+    <data-area [settings]="area"></data-area>
+    <table class="table-bordered">
+        <tr>
+
+            <td>תאור פריט</td>
+            <td>כמות</td>
+            <td>כמות בהזמנה</td>
+            <td>כמות במלאי</td>
+        </tr>
+        <tr *ngFor="let i of items">
+
+            <td>{{i.productName}}</td>
+            <td style="width:100px">
+                <data-control class="quantity" [field]="getQuantityField(i)"></data-control>
+            </td>
+            <td>{{i.orderedQuantity}}</td>
+            <td>{{i.quantityInStock}}</td>
+        </tr>
+    </table>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="createInvoice()">צור חשבונית</button>
+    <button mat-raised-button [mat-dialog-close]>סגור</button>
+</mat-dialog-actions>

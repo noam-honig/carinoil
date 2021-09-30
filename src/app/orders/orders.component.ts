@@ -5,6 +5,7 @@ import { OrderDetailsComponent } from '../order-details/order-details.component'
 import { Products } from '../products/products';
 import { YesNoQuestionComponent } from '../common/yes-no-question/yes-no-question.component';
 import { GridSettings, openDialog } from '@remult/angular';
+import { CreateInvoiceComponent } from '../create-invoice/create-invoice.component';
 
 @Component({
   selector: 'app-orders',
@@ -65,6 +66,11 @@ export class OrdersComponent implements OnInit {
   });
 
   ngOnInit() {
+    setTimeout(() => {
+
+      openDialog(CreateInvoiceComponent, x => x.args = { order: this.orders.items[0] });
+    }, 500);
+
   }
 
 }

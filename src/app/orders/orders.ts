@@ -1,6 +1,7 @@
 import { DataControl } from '@remult/angular';
 import { Entity, Field, IdEntity, IntegerField, isBackend, Remult, Validators } from 'remult';
 import { InputTypes } from 'remult/inputTypes';
+import { Customer } from '../customers/customer';
 import { Products } from '../products/products';
 import { Roles } from '../users/roles';
 
@@ -49,6 +50,8 @@ export class Orders extends IdEntity {
         caption: "תאריך", allowApiUpdate: false
     })
     createDate: Date;
+    @Field({ caption: 'לקוח' })
+    customer: Customer;
 }
 @Entity("OrderDetails", {
     allowApiUpdate: Roles.admin,
