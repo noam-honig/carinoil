@@ -1,61 +1,66 @@
-import { IdEntity, EntityClass, DateTimeColumn, BoolColumn, IdColumn, NumberColumn, ServerFunction, Context, StringColumn, ColumnOptions } from '@remult/core';
+import { DataControl } from '@remult/angular';
+import { Entity, Field, IdEntity, IntegerField, isBackend, Remult, Validators } from 'remult';
+import { InputTypes } from 'remult/inputTypes';
+import { Products } from '../products/products';
 import { Roles } from '../users/roles';
 
-@EntityClass
-export class Orders extends IdEntity {
-    name = new StringColumn("שם", {
-        validate: () => {
-            if (!this.name.value)
-                this.name.validationError = 'חסר ערך';
-
-        }
-    });
-    store = new StringColumn("חנות");
-    handled = new BoolColumn("טיפלתי בהזמנה");
-    comment = new StringColumn("הערות");
-    phone = new PhoneColumn();
-    items = new StringColumn();
-    createDate = new DateTimeColumn({ caption: "תאריך", allowApiUpdate: false });
-    constructor(context: Context) {
-        super({
-            name: "Orders",
-            allowApiUpdate: Roles.admin,
-            allowApiInsert: true,
-            allowApiRead: Roles.admin,
-            allowApiDelete:Roles.admin,
-            defaultOrderBy: () => [{ column: this.createDate, descending: true }],
-            saving: async () => {
-                if (this.isNew() && context.onServer) {
-                    this.createDate.value = new Date();
-                    let items: productInOrder[] = JSON.parse(this.items.value);
-                    if (!items || items.length === 0) {
-                        this.items.validationError = 'חובה לכלול פריטים בהזמנה';
-                    }
-                    for (const p of items) {
-                        let od = context.for(OrderDetails).create();
-                        od.orderId.value = this.id.value;
-                        od.product.value = p.product;
-                        od.quantity.value = p.quantity;
-                        await od.save();
-                    }
+@Entity<Orders>("Orders", {
+    allowApiUpdate: Roles.admin,
+    allowApiInsert: true,
+    allowApiRead: Roles.admin,
+    allowApiDelete: Roles.admin,
+    defaultOrderBy: (self) => self.createDate.descending()
+}
+    , (options, remult) =>
+        options.saving = async (self) => {
+            if (self.isNew() && isBackend()) {
+                self.createDate = new Date();
+                let items: productInOrder[] = JSON.parse(self.items);
+                if (!items || items.length === 0) {
+                    self.$.items.error = 'חובה לכלול פריטים בהזמנה';
+                }
+                for (const p of items) {
+                    let od = remult.repo(OrderDetails).create();
+                    od.orderId = self.id;
+                    od.product = await remult.repo(Products).findId(p.product);
+                    od.quantity = p.quantity;
+                    await od.save();
                 }
             }
-        });
-    }
-
+        }
+)
+export class Orders extends IdEntity {
+    @Field({
+        caption: "שם",
+        validate: Validators.required.withMessage("חסר ערך")
+    })
+    name: string;
+    @Field({ caption: "חנות" })
+    store: string;
+    @Field({ caption: "טיפלתי בהזמנה" })
+    handled: boolean;
+    @Field({ caption: "הערות" })
+    comment: string;
+    @PhoneField()
+    phone: string;
+    @Field()
+    items: string;
+    @Field<any, Date>({
+        caption: "תאריך", allowApiUpdate: false
+    })
+    createDate: Date;
 }
-@EntityClass
+@Entity("OrderDetails", {
+    allowApiUpdate: Roles.admin,
+    allowApiRead: Roles.admin
+})
 export class OrderDetails extends IdEntity {
-    orderId = new IdColumn();
-    product = new IdColumn();
-    quantity = new NumberColumn();
-    constructor() {
-        super({
-            name: "OrderDetails",
-            allowApiUpdate: Roles.admin,
-            allowApiRead: Roles.admin
-        });
-    }
+    @Field()
+    orderId: string;
+    @Field()
+    product: Products;
+    @IntegerField()
+    quantity: number;
 }
 export interface productInOrder {
     product: string;
@@ -63,30 +68,31 @@ export interface productInOrder {
 }
 
 
-export class PhoneColumn extends StringColumn {
-    constructor(settingsOrCaption?: ColumnOptions<string>) {
-        super({
-            validate: () => {
-                if (!this.value || this.value == '')
-                    this.validationError = 'אנא הזן מספר טלפון';
+export function PhoneField() {
+    return (target, key) => {
+        Field<any, string>({
+            validate: (_, self) => {
+                if (!self.value || self.value == '')
+                    self.error = 'אנא הזן מספר טלפון';
 
-                else if (!isPhoneValidForIsrael(this.value)) {
-                    this.validationError = 'טלפון שגוי';
+                else if (!isPhoneValidForIsrael(self.value)) {
+                    self.error = 'טלפון שגוי';
                 }
             },
             caption: 'טלפון',
-            dataControlSettings: () => ({
-                click: () => window.open('tel:' + this.displayValue),
-                allowClick: () => !!this.originalValue,
-                clickIcon: 'phone',
-                inputType: 'tel',
-                forceEqualFilter: false
-            })
-        }, settingsOrCaption);
+            displayValue: (_, phone) => PhoneColumn.formatPhone(phone)
+        })(target, key);
+        DataControl<any, string>({
+            click: (_, self) => window.open('tel:' + self.displayValue),
+            allowClick: (_, self) => !!self.originalValue,
+            clickIcon: 'phone',
+            inputType: 'tel',
+            useContainsFilter: false
+        });
     }
-    get displayValue() {
-        return PhoneColumn.formatPhone(this.value);
-    }
+}
+export class PhoneColumn {
+
     static fixPhoneInput(s: string) {
         if (!s)
             return s;
@@ -99,7 +105,7 @@ export class PhoneColumn extends StringColumn {
         return s;
     }
 
-    static sendWhatsappToPhone(phone: string, smsMessage: string, context: Context) {
+    static sendWhatsappToPhone(phone: string, smsMessage: string, remult: Remult) {
         phone = PhoneColumn.fixPhoneInput(phone);
         if (phone.startsWith('0')) {
             phone = '972' + phone.substr(1);
@@ -125,29 +131,7 @@ export class PhoneColumn extends StringColumn {
 
         return x;
     }
-    static validatePhone(col: StringColumn, context: Context) {
-        if (!col.value || col.value == '')
-            return;
 
-        if (!isPhoneValidForIsrael(col.value)) {
-            col.validationError = 'טלפון שגוי';
-        }
-        /*
-            if (col.displayValue.startsWith("05") || col.displayValue.startsWith("07")) {
-              if (col.displayValue.length != 12) {
-                col.validationError = getLang(context).invalidPhoneNumber;
-              }
-        
-            } else if (col.displayValue.startsWith('0')) {
-              if (col.displayValue.length != 11) {
-                col.validationError = getLang(context).invalidPhoneNumber;
-              }
-            }
-            else {
-              col.validationError = getLang(context).invalidPhoneNumber;
-            }
-          */
-    }
 }
 export function isPhoneValidForIsrael(input: string) {
     if (input) {

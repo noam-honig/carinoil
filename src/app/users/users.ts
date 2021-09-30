@@ -1,94 +1,76 @@
 
-import { Entity, IdEntity, IdColumn, checkForDuplicateValue, StringColumn, BoolColumn, ColumnOptions } from "@remult/core";
-import { changeDate } from '../shared/types';
-import { Context, EntityClass } from '@remult/core';
+import { IdEntity, FieldOptions, BackendMethod, Filter, Entity, Field, Validators, isBackend } from "remult";
+import { Remult, } from 'remult';
 import { Roles } from './roles';
+import { InputField } from "@remult/angular";
+import { InputTypes } from "remult/inputTypes";
 
-
-
-
-
-@EntityClass
-export class Users extends IdEntity {
-
-    constructor(private context: Context) {
-
-        super({
-            name: "Users",
-            allowApiRead: true,
-            allowApiDelete: context.isSignedIn(),
-            allowApiUpdate: context.isSignedIn(),
-            allowApiInsert: true,
-            saving: async () => {
-                if (context.onServer) {
-                    if (this.password.value && this.password.value != this.password.originalValue && this.password.value != Users.emptyPassword) {
-                        this.realStoredPassword.value = Users.passwordHelper.generateHash(this.password.value);
-                    }
-                    if ((await context.for(Users).count()) == 0)
-                        this.admin.value = true;
-
-                    await checkForDuplicateValue(this, this.name, this.context.for(Users));
-                    if (this.isNew())
-                        this.createDate.value = new Date();
+@Entity<Users>("Users", {
+    allowApiRead: remult => remult.authenticated(),
+    allowApiDelete: Roles.admin,
+    allowApiUpdate: remult => remult.authenticated(),
+    allowApiInsert: Roles.admin
+},
+    (options, remult) => {
+        options.apiPrefilter = (user) => {
+            if (!(remult.isAllowed(Roles.admin)))
+                return user.id.isEqualTo(remult.user.id);
+            return new Filter(() => { });
+        };
+        options.saving = async (user) => {
+            if (isBackend()) {
+                if (user._.isNew()) {
+                    user.createDate = new Date();
+                    if ((await remult.repo(Users).count()) == 0)
+                        user.admin = true;// If it's the first user, make it an admin
                 }
-            },
-            apiDataFilter: () => {
-                if (!context.isSignedIn())
-                    return this.id.isEqualTo("No User");
-                else if (!(context.isAllowed(Roles.admin)))
-                    return this.id.isEqualTo(this.context.user.id);
             }
-        });
-    }
-    public static emptyPassword = 'password';
-    name = new StringColumn({
-        caption: "שם",
-        validate: () => {
-
-            if (!this.name.value || this.name.value.length < 2)
-                this.name.validationError = 'Name is too short';
         }
-    });
-
-    realStoredPassword = new StringColumn({
-        dbName: 'סיסמה',
-        includeInApi: false
-    });
-    password = new StringColumn({ caption: 'סיסמה', dataControlSettings: () => ({ inputType: 'password' }), serverExpression: () => this.realStoredPassword.value ? Users.emptyPassword : '' });
-
-    createDate = new changeDate('Create Date');
-
-
-
-    admin = new BoolColumn();
-    static passwordHelper: PasswordHelper = {
-        generateHash: x => { throw ""; },
-        verify: (x, y) => { throw ""; }
-    };
-
-}
-export interface PasswordHelper {
-    generateHash(password: string): string;
-    verify(password: string, realPasswordHash: string): boolean;
-}
-
-
-export class UserId extends IdColumn {
-
-    constructor(private context: Context, settingsOrCaption?: ColumnOptions<string>) {
-        super({
-            dataControlSettings: () => ({
-                getValue: () => this.displayValue,
-                hideDataOnInput: true,
-                width: '200'
-            })
-        }, settingsOrCaption);
     }
-    get displayValue() {
-        return this.context.for(Users).lookup(this).name.value;
+)
+export class Users extends IdEntity {
+    @Field({
+        validate: [Validators.required, Validators.unique]
+    })
+    name: string = '';
+    @Field({ includeInApi: false })
+    password: string = '';
+    @Field({
+        allowApiUpdate: false
+    })
+    createDate: Date = new Date();
+
+    @Field({
+        allowApiUpdate: Roles.admin
+    })
+    admin: Boolean = false;
+    constructor(private remult: Remult) {
+        super();
     }
-
-
-
+    async hashAndSetPassword(password: string) {
+        this.password = (await import('password-hash')).generate(password);
+    }
+    async passwordMatches(password: string) {
+        return !this.password || (await import('password-hash')).verify(password, this.password);
+    }
+    @BackendMethod({ allowed: true })
+    async create(password: string) {
+        if (!this._.isNew())
+            throw "Invalid Operation";
+        await this.hashAndSetPassword(password);
+        await this._.save();
+    }
+    @BackendMethod({ allowed: remult => remult.authenticated() })
+    async updatePassword(password: string) {
+        if (this._.isNew() || this.id != this.remult.user.id)
+            throw "Invalid Operation";
+        await this.hashAndSetPassword(password);
+        await this._.save();
+    }
 }
-
+export class PasswordControl extends InputField<string>
+{
+    constructor(caption = 'סיסמה') {
+        super({ caption, inputType: InputTypes.password, defaultValue: () => '' });
+    }
+}

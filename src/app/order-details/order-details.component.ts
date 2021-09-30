@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Orders, OrderDetails } from '../orders/orders';
-import { Context } from '@remult/core';
+import { Remult } from 'remult';
 import { Products } from '../products/products';
 
 @Component({
@@ -10,15 +10,15 @@ import { Products } from '../products/products';
 })
 export class OrderDetailsComponent implements OnInit {
 
-  constructor(private context: Context) { }
+  constructor(private remult: Remult) { }
   args: { order: Orders };
   details: OrderDetails[];
   async ngOnInit() {
-    this.details = await this.context.for(OrderDetails).find({ where: x => x.orderId.isEqualTo(this.args.order.id), limit: 100 })
+    this.details = await this.remult.repo(OrderDetails).find({ where: x => x.orderId.isEqualTo(this.args.order.id), limit: 100 })
 
   }
   getProduct(d: OrderDetails) {
-    return this.context.for(Products).lookup(d.product).name.value;
+    return d.product?.name;
   }
 
 }

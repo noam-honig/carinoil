@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Context } from '@remult/core';
+import { GridSettings } from '@remult/angular';
+import { Remult } from 'remult';
 import { Products } from './products';
 
 @Component({
@@ -9,13 +10,11 @@ import { Products } from './products';
 })
 export class ProductsComponent implements OnInit {
 
-  constructor(private context:Context) { }
-  products = this.context.for(Products).gridSettings({
-    allowCRUD:true,
-    knowTotalRows:true,
-    get:{
-      limit:100
-    }
+  constructor(private remult: Remult) { }
+  products = new GridSettings(this.remult.repo(Products), {
+    allowCrud: true,
+    knowTotalRows: true,
+    rowsInPage: 100
   });
 
   ngOnInit() {

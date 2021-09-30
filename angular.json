@@ -30,8 +30,7 @@
               "src/styles.scss",
               "./node_modules/@remult/angular/input-styles.scss"
             ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "scripts": []
           },
           "configurations": {
             "production": {

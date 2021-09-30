@@ -1,27 +1,30 @@
-import { IdEntity, StringColumn, EntityClass, BoolColumn, Context, NumberColumn } from '@remult/core';
+import { DataControl } from '@remult/angular';
+import { Entity, Field, IdEntity } from 'remult';
 import { Roles } from '../users/roles';
 
-@EntityClass
+@Entity<Products>("Products", {
+    allowApiInsert: Roles.admin,
+    allowApiUpdate: Roles.admin,
+    allowApiRead: true,
+    defaultOrderBy: (self) => [self.archive, self.seder, self.name]
+}, (options, remult) => options.apiPrefilter = (self) => {
+    if (!remult.isAllowed(Roles.admin))
+        return self.archive.isEqualTo(false);
+})
 export class Products extends IdEntity {
-    seder = new NumberColumn({ caption: "סדר", dataControlSettings: () => ({ width: '50px'}) });
-    name = new StringColumn();
-    imageUrl = new StringColumn();
-    pacingFunction = new StringColumn('גורם אירוז');
-    SKU = new StringColumn('מק"ט');
-    archive = new BoolColumn();
-    constructor(context: Context) {
-        super({
-            name: "Products",
-            allowApiInsert: Roles.admin,
-            allowApiUpdate: Roles.admin,
-            allowApiRead: true,
-            apiDataFilter: () => {
-                if (!context.isAllowed(Roles.admin))
-                    return this.archive.isEqualTo(false);
-            },
+    @DataControl({ width: '50px' })
+    @Field({ caption: "סדר" })
+    seder: number;
+    @Field()
+    name: string;
+    @Field()
+    imageUrl: string;
+    @Field({ caption: 'גורם אירוז' })
+    pacingFunction: string;
+    @Field({ caption: 'מק"ט' })
+    SKU: string;
+    @Field()
+    archive: boolean;
 
-            defaultOrderBy: () => [this.archive, this.seder, this.name]
 
-        });
-    }
 }

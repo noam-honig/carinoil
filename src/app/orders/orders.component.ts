@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Context } from '@remult/core';
+import { Remult } from 'remult';
 import { OrderDetails, Orders, PhoneColumn } from './orders';
 import { OrderDetailsComponent } from '../order-details/order-details.component';
 import { Products } from '../products/products';
 import { YesNoQuestionComponent } from '../common/yes-no-question/yes-no-question.component';
+import { GridSettings, openDialog } from '@remult/angular';
 
 @Component({
   selector: 'app-orders',
@@ -12,21 +13,21 @@ import { YesNoQuestionComponent } from '../common/yes-no-question/yes-no-questio
 })
 export class OrdersComponent implements OnInit {
 
-  constructor(private context: Context) {
+  constructor(private remult: Remult) {
 
   }
-  orders = this.context.for(Orders).gridSettings({
+  orders = new GridSettings(this.remult.repo(Orders), {
     allowUpdate: true,
     allowDelete: true,
     numOfColumnsInGrid: 6,
-    confirmDelete: async (r) => await this.context.openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
+    confirmDelete: async (r) => await openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
     columnSettings: o => [
-      { column: o.name, readOnly: true },
-      { column: o.handled, width: '55px' },
-      { column: o.store, readOnly: true },
-      { column: o.comment, readOnly: true },
-      { column: o.phone, readOnly: true },
-      { column: o.createDate, readOnly: true },
+      { field: o.name, readOnly: true },
+      { field: o.handled, width: '55px' },
+      { field: o.store, readOnly: true },
+      { field: o.comment, readOnly: true },
+      { field: o.phone, readOnly: true },
+      { field: o.createDate, readOnly: true },
     ],
     rowButtons: [
       {
@@ -34,20 +35,20 @@ export class OrdersComponent implements OnInit {
         , showInLine: true,
         textInMenu: 'מוצרים בהזמנה',
         click: (o) => {
-          this.context.openDialog(OrderDetailsComponent, x => x.args = { order: o })
+          openDialog(OrderDetailsComponent, x => x.args = { order: o })
         }
       },
       {
         icon: 'speaker_notes'
         , showInLine: true,
-        textInMenu: o => 'שלח ווטסאפ ל' + o.name.value,
+        textInMenu: o => 'שלח ווטסאפ ל' + o.name,
         click: async (o) => {
-          let message = 'שלום ' + o.name.value + '\r\nאלו הפריטים שהזמנת:\r\n';
-          for (const d of await this.context.for(OrderDetails).find({ where: od => od.orderId.isEqualTo(o.id), limit: 100 })) {
-            message += d.quantity.value + " x " + (await (await this.context.for(Products).lookupAsync(d.product)).name.value) + "\r\n";
+          let message = 'שלום ' + o.name + '\r\nאלו הפריטים שהזמנת:\r\n';
+          for (const d of await this.remult.repo(OrderDetails).find({ where: od => od.orderId.isEqualTo(o.id), limit: 100 })) {
+            message += d.quantity + " x " + (d.product?.name && '') + "\r\n";
           }
           setTimeout(() => {
-            PhoneColumn.sendWhatsappToPhone(o.phone.value, message, this.context);
+            PhoneColumn.sendWhatsappToPhone(o.phone, message, this.remult);
           }, 10);
 
         }
@@ -55,9 +56,9 @@ export class OrdersComponent implements OnInit {
       {
         icon: 'call'
         , showInLine: true,
-        textInMenu: o => 'התקשר ל' + o.name.value,
+        textInMenu: o => 'התקשר ל' + o.name,
         click: async (o) => {
-          window.open('tel:' + o.phone.displayValue)
+          window.open('tel:' + o.$.phone.displayValue)
         }
       }
     ]

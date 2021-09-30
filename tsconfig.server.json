@@ -1,13 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist-server/",
+    "outDir": "./dist/server",
     "module": "commonjs",
-    "target": "es5",
     "skipLibCheck": true,
     "emitDecoratorMetadata":true
   },
   "files": [
-    "./src/app/server/server.ts"
+    "./src/server/index.ts"
   ]
 }
