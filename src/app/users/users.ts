@@ -33,7 +33,7 @@ export class Users extends IdEntity {
         validate: [Validators.required, Validators.unique]
     })
     name: string = '';
-    @Field({ includeInApi: false })
+    @Field({ includeInApi: false,dbName:'סיסמה' })
     password: string = '';
     @Field({
         allowApiUpdate: false

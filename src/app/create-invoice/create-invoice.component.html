@@ -8,6 +8,7 @@
             <td>כמות</td>
             <td>כמות בהזמנה</td>
             <td>כמות במלאי</td>
+            <td>מחיר יחידה</td>
         </tr>
         <tr *ngFor="let i of items">
 
@@ -17,6 +18,7 @@
             </td>
             <td>{{i.orderedQuantity}}</td>
             <td>{{i.quantityInStock}}</td>
+            <td>{{i.unitPrice}}</td>
         </tr>
     </table>
 </mat-dialog-content>

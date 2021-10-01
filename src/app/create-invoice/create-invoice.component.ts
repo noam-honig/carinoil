@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BackendMethod, getFields, Remult } from 'remult';
 import { OrderDetails, Orders } from '../orders/orders';
 import { Roles } from '../users/roles';
-import { callRivhity, Invoice, ItemInInvoice } from './invoice';
+import { callRivhit, Invoice, ItemInInvoice } from './invoice';
 import { set } from 'remult/set';
 
 import { DataAreaSettings, getValueList, openDialog, SelectValueDialogComponent } from '@remult/angular';
@@ -29,10 +29,29 @@ export class CreateInvoiceComponent implements OnInit {
         field: this.args.order.$.customer,
         hideDataOnInput: true,
         getValue: () => this.args.order.customer?.name,
-        valueList: getValueList(this.remult.repo(Customer))
+        
+        click: async () => {
+          let customers = await this.remult.repo(Customer).find({ limit: 1000 }).then(x => x.map(c => ({ caption: c.name, item: c })));
+          openDialog(SelectValueDialogComponent, async x => x.args({
+            values: customers,
+            onSelect: c => {
+              this.args.order.customer = c.item;
+              Invoice.updatePriceList(this.items, this.args.order.customer?.rivhitId);
+            }
+          }))
+        }
+        
       }]
     });
-    this.items = (await CreateInvoiceComponent.buildItemsInInvoice(this.args.order.id)).map(y => {
+    if (!this.args.order.customer) {
+      await this.remult.repo(Orders).findFirst({
+        where: x => x.phone.isEqualTo(this.args.order.phone).and(x.customer.isDifferentFrom(null)),
+        useCache: false
+      }).then(o => this.args.order.customer = o?.customer);
+    }
+
+
+    this.items = (await Invoice.buildItemsInInvoice(this.args.order.id, this.args.order.customer?.rivhitId)).map(y => {
       let r = new ItemInInvoice();
       set(r, y);
       return r;
@@ -50,43 +69,17 @@ export class CreateInvoiceComponent implements OnInit {
       details: this.items
     });
     await inv.create();
+    this.args.order.handled = true;
+    await this.args.order.save();
     this.ref.close();
+    setTimeout(() => {
+      window.open(inv.apiResponse.document_link);
+    }, 100);
+
 
   }
-  @BackendMethod({ allowed: Roles.admin })
-  static async buildItemsInInvoice(orderId: string, remult?: Remult) {
 
 
-
-
-    let result: ItemInInvoice[] = [];
-    for await (const od of remult.repo(OrderDetails).iterate({ where: od => od.orderId.isEqualTo(orderId) })) {
-
-
-      let quantityInStock: string;
-      try {
-        quantityInStock = await callRivhity("Item.Quantity", {
-          item_id: od.product.rivhitId
-        }).then(r => r.quantity);
-      }
-      catch (err) {
-        quantityInStock = err
-      }
-
-
-
-      result.push({
-        orderDetailId: od.id,
-        orderedQuantity: od.quantity,
-        catalog_number:od.product.SKU,
-        productName: od.product?.name,
-        rivhitId: od.product?.rivhitId,
-        quantity: od.quantity,
-        quantityInStock
-      })
-    }
-    return result;
-  }
 
 }
 

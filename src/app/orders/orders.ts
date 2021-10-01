@@ -50,7 +50,7 @@ export class Orders extends IdEntity {
         caption: "תאריך", allowApiUpdate: false
     })
     createDate: Date;
-    @Field({ caption: 'לקוח' })
+    @Field({ caption: 'לקוח', allowNull: true })
     customer: Customer;
 }
 @Entity("OrderDetails", {
@@ -69,8 +69,6 @@ export interface productInOrder {
     product: string;
     quantity: number;
 }
-
-
 export function PhoneField() {
     return (target, key) => {
         Field<any, string>({

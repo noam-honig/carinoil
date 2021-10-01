@@ -19,7 +19,7 @@ export class OrdersComponent implements OnInit {
   }
   orders = new GridSettings(this.remult.repo(Orders), {
     allowUpdate: true,
-    allowDelete: true,
+    allowDelete: false,
     numOfColumnsInGrid: 6,
     confirmDelete: async (r) => await openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
     columnSettings: o => [
@@ -34,11 +34,12 @@ export class OrdersComponent implements OnInit {
       {
         icon: 'shopping_cart'
         , showInLine: true,
-        textInMenu: 'מוצרים בהזמנה',
+        textInMenu: 'צור חשבונית',
         click: (o) => {
-          openDialog(OrderDetailsComponent, x => x.args = { order: o })
+          openDialog(CreateInvoiceComponent, x => x.args = { order: o })
         }
       },
+   
       {
         icon: 'speaker_notes'
         , showInLine: true,
@@ -66,10 +67,11 @@ export class OrdersComponent implements OnInit {
   });
 
   ngOnInit() {
-    setTimeout(() => {
+    if (false)
+      setTimeout(() => {
 
-      openDialog(CreateInvoiceComponent, x => x.args = { order: this.orders.items[0] });
-    }, 500);
+        openDialog(CreateInvoiceComponent, x => x.args = { order: this.orders.items[0] });
+      }, 500);
 
   }
 
