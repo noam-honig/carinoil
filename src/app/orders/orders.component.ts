@@ -21,6 +21,7 @@ export class OrdersComponent implements OnInit {
     allowUpdate: true,
     allowDelete: false,
     numOfColumnsInGrid: 6,
+    knowTotalRows:true,
     confirmDelete: async (r) => await openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
     columnSettings: o => [
       { field: o.name, readOnly: true },
