@@ -17,6 +17,7 @@ export class CustomersComponent implements OnInit {
     allowCrud: true,
     allowDelete: false,
     knowTotalRows:true,
+    rowsInPage:200,
     gridButtons: [{
       textInMenu: () => 'קליטת לקוחות מרווחית',
       click: async () => {
