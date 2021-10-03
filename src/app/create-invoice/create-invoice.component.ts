@@ -60,6 +60,9 @@ export class CreateInvoiceComponent implements OnInit {
   getQuantityField(item: ItemInInvoice) {
     return getFields(item).quantity;
   }
+  getUnitPrice(item: ItemInInvoice) {
+    return getFields(item).unitPrice;
+  }
   async createInvoice() {
     if (this.args.order.wasChanged())
       this.args.order.save();

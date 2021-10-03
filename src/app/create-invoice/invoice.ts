@@ -51,14 +51,17 @@ export class Invoice extends IdEntity {
 
 
             let quantityInStock: string;
-
-            try {
-                quantityInStock = await callRivhit("Item.Quantity", {
-                    item_id: od.product.rivhitId
-                }).then(r => r.quantity);
-            }
-            catch (err) {
-                quantityInStock = err
+            if (od.product.rivhitId == 0)
+                quantityInStock = "קוד פריט ברווחית לא מעודכן";
+            else {
+                try {
+                    quantityInStock = await callRivhit("Item.Quantity", {
+                        item_id: od.product.rivhitId
+                    }).then(r => r.quantity);
+                }
+                catch (err) {
+                    quantityInStock = err
+                }
             }
 
             result.push({
@@ -103,6 +106,7 @@ export class ItemInInvoice {
     quantityInStock: string;
     @IntegerField({ caption: ' ' })
     quantity: number;
+    @Field({ caption: ' ' })
     unitPrice: number;
 }
 

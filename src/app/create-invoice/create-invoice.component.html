@@ -18,7 +18,9 @@
             </td>
             <td>{{i.orderedQuantity}}</td>
             <td>{{i.quantityInStock}}</td>
-            <td>{{i.unitPrice}}</td>
+            <td>
+                <data-control class="quantity" [field]="getUnitPrice(i)"></data-control>
+            </td>
         </tr>
     </table>
 </mat-dialog-content>
