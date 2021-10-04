@@ -30,6 +30,7 @@ export class OrdersComponent implements OnInit {
       { field: o.comment, readOnly: true },
       { field: o.phone, readOnly: true },
       { field: o.createDate, readOnly: true },
+      { field: o.ramiComment, readOnly: false },
     ],
     rowButtons: [
       {

@@ -1,14 +1,15 @@
 <p>צור חשבונית</p>
 <mat-dialog-content>
     <data-area [settings]="area"></data-area>
-    <table class="table-bordered">
+    <table class="table-bordered" *ngIf="items">
         <tr>
 
             <td>תאור פריט</td>
-            <td>כמות</td>
-            <td>כמות בהזמנה</td>
+            <td>כמות - {{totalQuantity()}}</td>
+            <td>מחיר - {{total().toFixed(2)}}</td>
             <td>כמות במלאי</td>
-            <td>מחיר יחידה</td>
+            <td>כמות בהזמנה</td>
+            <td>כמות שהופקה בחשבוניות קודמות</td>
         </tr>
         <tr *ngFor="let i of items">
 
@@ -16,15 +17,18 @@
             <td style="width:100px">
                 <data-control class="quantity" [field]="getQuantityField(i)"></data-control>
             </td>
-            <td>{{i.orderedQuantity}}</td>
-            <td>{{i.quantityInStock}}</td>
-            <td>
+            <td style="width:100px">
                 <data-control class="quantity" [field]="getUnitPrice(i)"></data-control>
             </td>
+            <td>{{i.quantityInStock}}</td>
+            <td>{{i.orderedQuantity}}</td>
+            <td>{{i.quantityDelivered}}</td>
         </tr>
     </table>
+    <data-area [settings]="area2"></data-area>
 </mat-dialog-content>
 <mat-dialog-actions>
+    <button mat-raised-button  (click)="addProduct()">הוסף מוצר</button>
     <button mat-raised-button color="primary" (click)="createInvoice()">צור חשבונית</button>
     <button mat-raised-button [mat-dialog-close]>סגור</button>
 </mat-dialog-actions>

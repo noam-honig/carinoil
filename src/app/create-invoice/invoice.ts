@@ -3,6 +3,7 @@ import { Customer } from "../customers/customer";
 import { Roles } from "../users/roles";
 import * as fetch from 'node-fetch';
 import { OrderDetails } from "../orders/orders";
+import { Products } from "../products/products";
 
 @Entity<Invoice>('invoices', {
     allowApiCrud: false
@@ -45,36 +46,50 @@ export class Invoice extends IdEntity {
 
     }
     @BackendMethod({ allowed: Roles.admin })
-    static async buildItemsInInvoice(orderId: string, customerIdInRivhit?: number, remult?: Remult) {
+    static async buildItemsInInvoice(orderId: string, customerIdInRivhit?: number, productId?: string, remult?: Remult) {
         let result: ItemInInvoice[] = [];
-        for await (const od of remult.repo(OrderDetails).iterate({ where: od => od.orderId.isEqualTo(orderId) })) {
+
+        let previousInvoices = await remult.repo(Invoice).find({ where: x => x.orderId.isEqualTo(orderId) });
 
 
+        let addToResult = async (p: Products, quantity: number, orderDetailId: string) => {
             let quantityInStock: string;
-            if (od.product.rivhitId == 0)
+            if (p.rivhitId == 0)
                 quantityInStock = "קוד פריט ברווחית לא מעודכן";
             else {
                 try {
                     quantityInStock = await callRivhit("Item.Quantity", {
-                        item_id: od.product.rivhitId
+                        item_id: p.rivhitId
                     }).then(r => r.quantity);
                 }
                 catch (err) {
                     quantityInStock = err
                 }
             }
+            let quantityDelivered = previousInvoices.map(i => i.details.find(d => d.orderDetailId==orderDetailId)).map(d => d.quantity).reduce((a, b) => a + b, 0);
 
             result.push({
-                orderDetailId: od.id,
-                orderedQuantity: od.quantity,
-                catalog_number: od.product.SKU,
-                productName: od.product?.name,
-                rivhitId: od.product?.rivhitId,
-                quantity: od.quantity,
+                orderDetailId: orderDetailId,
+                orderedQuantity: quantity,
+                catalog_number: p.SKU,
+                productName: p?.name,
+                rivhitId: p?.rivhitId,
+                quantity: quantity - quantityDelivered > 0 ? quantity - quantityDelivered : 0,
                 quantityInStock,
-                unitPrice: 0
+                unitPrice: 0,
+                quantityDelivered
+
             })
         }
+        if (productId) {
+            addToResult(await remult.repo(Products).findId(productId), 0, "");
+        }
+        else
+            for await (const od of remult.repo(OrderDetails).iterate({ where: od => od.orderId.isEqualTo(orderId) })) {
+
+                await addToResult(od.product, od.quantity, od.id);
+
+            }
         await Invoice.updatePriceList(result, customerIdInRivhit);
         return result;
     }
@@ -87,12 +102,13 @@ export class Invoice extends IdEntity {
     @BackendMethod({ allowed: Roles.admin })
     static async getPriceList(customerIdInRivhit?: number): Promise<{ item_id: number, price_nis: number }[]> {
         let price_list_id = 0;
-        if (customerIdInRivhit)
-            price_list_id = await callRivhit("Customer.Get", { customer_id: customerIdInRivhit }).then((r: CustomerInfoInRivhit) => r.price_list_id);
-        if (price_list_id > 0)
-            return callRivhit("PriceList.Items", { price_list_id }).then(x => x.price_list_items);
-        else
-            return getRivhitItems().then((x) => x.item_list.map(({ item_id, sale_nis }) => ({ item_id, price_nis: sale_nis })))
+        try {
+            if (customerIdInRivhit)
+                price_list_id = await callRivhit("Customer.Get", { customer_id: customerIdInRivhit }).then((r: CustomerInfoInRivhit) => r.price_list_id);
+            if (price_list_id > 0)
+                return callRivhit("PriceList.Items", { price_list_id }).then(x => x.price_list_items);
+        } catch { }
+        return getRivhitItems().then((x) => x.item_list.map(({ item_id, sale_nis }) => ({ item_id, price_nis: sale_nis })))
     }
 }
 
@@ -108,6 +124,7 @@ export class ItemInInvoice {
     quantity: number;
     @Field({ caption: ' ' })
     unitPrice: number;
+    quantityDelivered: number;
 }
 
 export async function getRivhitItems(): Promise<{ item_list: { item_id: number, sale_nis: number, item_part_num: string }[] }> {

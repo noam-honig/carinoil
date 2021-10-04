@@ -10,7 +10,7 @@ import { Roles } from '../users/roles';
     allowApiInsert: true,
     allowApiRead: Roles.admin,
     allowApiDelete: Roles.admin,
-    defaultOrderBy: (self) => self.createDate.descending()
+    defaultOrderBy: (self) => [self.handled, self.createDate.descending()]
 }
     , (options, remult) =>
         options.saving = async (self) => {
@@ -52,6 +52,8 @@ export class Orders extends IdEntity {
     createDate: Date;
     @Field({ caption: 'לקוח', allowNull: true })
     customer: Customer;
+    @Field({ caption: 'הערה של רמי' })
+    ramiComment: string;
 }
 @Entity("OrderDetails", {
     allowApiUpdate: Roles.admin,

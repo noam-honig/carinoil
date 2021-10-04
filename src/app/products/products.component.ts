@@ -30,7 +30,7 @@ export class ProductsComponent implements OnInit {
   @BackendMethod({ allowed: Roles.admin })
   static async UpdateProductsIdInRivhit(remult?: Remult) {
     let items = await getRivhitItems();
-    for await (const p of remult.repo(Products).iterate({ where: p => p.rivhitId.isEqualTo(0) })) {
+    for await (const p of remult.repo(Products).iterate({ where: p => p.rivhitId.isEqualTo(0).and(p.SKU.isDifferentFrom('')) })) {
       let item = items.item_list.find(i => i.item_part_num == p.SKU);
       if (item) {
         p.rivhitId = item.item_id;
@@ -42,4 +42,3 @@ export class ProductsComponent implements OnInit {
   }
 
 }
- 
