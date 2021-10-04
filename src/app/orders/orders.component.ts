@@ -19,7 +19,7 @@ export class OrdersComponent implements OnInit {
   }
   orders = new GridSettings(this.remult.repo(Orders), {
     allowUpdate: true,
-    allowDelete: false,
+    allowDelete: true,
     numOfColumnsInGrid: 6,
     knowTotalRows:true,
     confirmDelete: async (r) => await openDialog(YesNoQuestionComponent, x => x.args = { message: 'אתה בטוח שאתה רוצה למחוק? אין חרטות :)' }, x => x.okPressed),
