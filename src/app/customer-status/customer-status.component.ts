@@ -80,19 +80,32 @@ export class CustomerStatusComponent implements OnInit {
       documents: await callRivhit("Document.List", {
         from_customer_id: c.rivhitId,
         to_customer_id: c.rivhitId
-      }).then(r => sortDocumentArray(r.document_list))
+      }).then((r: { document_list: Document[] }) => {
+        for (const d of r.document_list) {
+          d.sortDate = toSortableDate(d.document_date);
+        }
+        r.document_list.sort((a, b) => a.sortDate.localeCompare(b.sortDate));
+        return r.document_list;
+
+      }),
+      open: await callRivhit("Customer.OpenDocuments", {
+        customer_id: c.rivhitId
+        
+      }).then((r: { open_documents: OpenDocument[] }) => {
+        for (const d of r.open_documents) {
+          d.sortDate = toSortableDate(d.issue_date);
+        }
+        r.open_documents.sort((a, b) => a.sortDate.localeCompare(b.sortDate));
+        return r.open_documents;
+
+      }),
+
     }
   }
 }
-function sortDocumentArray(docs: Document[]) {
-  for (const d of docs) {
-    d.sortDate = toSortableDate(d.document_date);
-  }
-  docs.sort((a, b) => a.sortDate.localeCompare(b.sortDate));
-  return docs;
-}
 interface customerStatus {
   documents: Document[];
+  open?: OpenDocument[];
 }
 interface Document {
   document_type: number;
@@ -112,6 +125,20 @@ interface Document {
   document_type_name: string;
   is_accounting: boolean;
   project_id: number;
+}
+export interface OpenDocument {
+  balance: number;
+  currency_id: number;
+  customer_id: number;
+  customer_name: string;
+  document_number: number;
+  document_type: number;
+  due_date: string;
+  issue_date: string;
+  paid_amount: number;
+  total_amount: number;
+  total_amount_mtc: number;
+  sortDate: string;
 }
 function toSortableDate(d: string) {
   return d.substr(6, 4) + '-' + d.substr(3, 2) + d.substr(0, 2);

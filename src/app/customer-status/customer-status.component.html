@@ -1,19 +1,56 @@
 <data-control [field]="$.customer"></data-control>
-<data-area [settings]="area"></data-area>
-<table class="table-bordered" *ngIf="status">
-    <tr>
-        <th>מספר מסמך<br>{{count()}}</th>
-        <th>תאריך</th>
-        <th>סכום ללא מע"מ<br>{{total().toLocaleString('he-il')}}</th>
-        <th>סוג מסמך</th>
-    </tr>
-    <ng-container *ngFor="let d  of status.documents">
-        <tr *ngIf="filter(d)">
+<mat-tab-group>
+    <mat-tab label="מסמכים">
 
-            <td><a (click)="open(d)">{{d.document_number}}</a></td>
-            <td>{{d.document_date}}</td>
-            <td style="direction: ltr;text-align: right;">{{(d.amount-d.total_vat).toLocaleString('he-il')}}</td>
-            <td>{{d.document_type_name}}</td>
-        </tr>
-    </ng-container>
-</table>
+
+        <data-area [settings]="area"></data-area>
+        <table class="table-bordered" *ngIf="status">
+            <tr>
+                <th>מספר מסמך<br>{{count()}}</th>
+                <th>תאריך</th>
+                <th>סכום ללא מע"מ<br>{{total().toLocaleString('he-il')}}</th>
+                <th>סוג מסמך</th>
+            </tr>
+            <ng-container *ngFor="let d  of status.documents">
+                <tr *ngIf="filter(d)">
+
+                    <td><a (click)="open(d)">{{d.document_number}}</a></td>
+                    <td>{{d.document_date}}</td>
+                    <td style="direction: ltr;text-align: right;">{{(d.amount-d.total_vat).toLocaleString('he-il')}}
+                    </td>
+                    <td>{{d.document_type_name}}</td>
+                </tr>
+            </ng-container>
+        </table>
+    </mat-tab>
+    <mat-tab label="לתשלום">
+
+
+
+        <table class="table-bordered" *ngIf="status">
+            <tr>
+                <th>מספר מסמך</th>
+                <th>תאריך מסמך</th>
+                
+                <th>סה"כ למסמך</th>
+                <th>שולם/נסגר</th>
+                <th>יתרה לתשלום</th>
+
+            </tr>
+            <ng-container *ngFor="let d  of status.open">
+                <tr>
+
+                    <td><a (click)="open(d)">{{d.document_number}}</a></td>
+                    <td>{{d.issue_date.replace('/20','/')}}</td>
+                    <td style="direction: ltr;text-align: right;">{{(d.total_amount).toLocaleString('he-il')}}</td>
+                    <td style="direction: ltr;text-align: right;">{{(d.paid_amount).toLocaleString('he-il')}}
+                    
+                    <th style="direction: ltr;text-align: right;">
+                        {{(d.total_amount-d.paid_amount).toLocaleString('he-il')}}
+                    </th>
+                    <td>{{d.document_type_name}}</td>
+                </tr>
+            </ng-container>
+        </table>
+    </mat-tab>
+</mat-tab-group>

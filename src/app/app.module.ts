@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -44,6 +45,7 @@ import { CustomerStatusComponent } from './customer-status/customer-status.compo
     CustomerStatusComponent
   ],
   imports: [
+    MatTabsModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
