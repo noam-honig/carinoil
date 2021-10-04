@@ -1,0 +1,19 @@
+<data-control [field]="$.customer"></data-control>
+<data-area [settings]="area"></data-area>
+<table class="table-bordered" *ngIf="status">
+    <tr>
+        <th>מספר מסמך<br>{{count()}}</th>
+        <th>תאריך</th>
+        <th>סכום ללא מע"מ<br>{{total().toLocaleString('he-il')}}</th>
+        <th>סוג מסמך</th>
+    </tr>
+    <ng-container *ngFor="let d  of status.documents">
+        <tr *ngIf="filter(d)">
+
+            <td><a (click)="open(d)">{{d.document_number}}</a></td>
+            <td>{{d.document_date}}</td>
+            <td style="direction: ltr;text-align: right;">{{(d.amount-d.total_vat).toLocaleString('he-il')}}</td>
+            <td>{{d.document_type_name}}</td>
+        </tr>
+    </ng-container>
+</table>

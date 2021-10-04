@@ -27,6 +27,7 @@ import { OrdersComponent } from './orders/orders.component';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { CustomersComponent } from './customers/customers.component';
 import { CreateInvoiceComponent } from './create-invoice/create-invoice.component';
+import { CustomerStatusComponent } from './customer-status/customer-status.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { CreateInvoiceComponent } from './create-invoice/create-invoice.componen
     OrdersComponent,
     OrderDetailsComponent,
     CustomersComponent,
-    CreateInvoiceComponent
+    CreateInvoiceComponent,
+    CustomerStatusComponent
   ],
   imports: [
     BrowserModule,
