@@ -66,7 +66,9 @@ export class Invoice extends IdEntity {
                     quantityInStock = err
                 }
             }
-            let quantityDelivered = previousInvoices.map(i => i.details.find(d => d.orderDetailId==orderDetailId)).map(d => d.quantity).reduce((a, b) => a + b, 0);
+            let quantityDelivered = previousInvoices.map(i => i.details.find(d => d.orderDetailId == orderDetailId))?.map(d => d?.quantity).reduce((a, b) => a + b, 0);
+            if (!quantityDelivered)
+                quantityDelivered = 0;
 
             result.push({
                 orderDetailId: orderDetailId,
