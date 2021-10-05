@@ -49,7 +49,8 @@ export class OrdersComponent implements OnInit {
         click: async (o) => {
           let message = 'שלום ' + o.name + '\r\nאלו הפריטים שהזמנת:\r\n';
           for (const d of await this.remult.repo(OrderDetails).find({ where: od => od.orderId.isEqualTo(o.id), limit: 100 })) {
-            message += d.quantity + " x " + (d.product?.name && '') + "\r\n";
+            message += d.quantity + " x " + (d.product?.name || '') + "\r\n";
+            
           }
           setTimeout(() => {
             PhoneColumn.sendWhatsappToPhone(o.phone, message, this.remult);
