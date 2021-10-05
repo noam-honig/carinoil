@@ -10,6 +10,7 @@ import { Roles } from '../users/roles';
     allowApiInsert: true,
     allowApiRead: Roles.admin,
     allowApiDelete: Roles.admin,
+    
     defaultOrderBy: (self) => [self.handled, self.createDate.descending()]
 }
     , (options, remult) =>
