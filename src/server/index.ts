@@ -12,6 +12,7 @@ import * as jwt from 'express-jwt';
 import * as compression from 'compression';
 
 import '../app/app-routing.module';
+import '../app/app.component';
 import { Products } from '../app/products/products';
 import { OrderDetails } from '../app/orders/orders';
 async function startup() {
