@@ -108,8 +108,8 @@ export class CustomerStatusComponent implements OnInit {
   }
   public barChartOptions: ChartOptions = {
     responsive: true,
-    
-    
+
+
   };
   public barChartLabels: Label[] = [];
   public barChartType: ChartType = 'horizontalBar';
@@ -125,6 +125,10 @@ export class CustomerStatusComponent implements OnInit {
     let m = "ינואר,פברואר,מרץ,אפריל,מאי,יוני,יולי,אוגוסט,ספטמבר,אוקטובר,נובמבר,דצמבר".split(',');
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
+    this.thisYear.data = [];
+    this.previousYear.data = [];
+    this.barChartLabels.splice(0);
+
     for (let index = 0; index < 12; index++) {
       this.thisYear.data.push(this.sum(year, month));
       this.previousYear.data.push(this.sum(year - 1, month));
@@ -135,6 +139,8 @@ export class CustomerStatusComponent implements OnInit {
         year -= 1;
       }
     }
+    
+    
   }
   sum(year: number, month: number) {
     let m = (month + 1).toString();
