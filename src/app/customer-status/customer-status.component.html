@@ -1,5 +1,19 @@
 <data-control [field]="$.customer"></data-control>
 <mat-tab-group>
+    <mat-tab label="שנתי">
+        <div style="display: block;">
+            <canvas baseChart  [height]="400"
+              [datasets]="barChartData"
+              [labels]="barChartLabels"
+              [options]="barChartOptions"
+              [plugins]="barChartPlugins"
+              [legend]="barChartLegend"
+              [chartType]="barChartType"
+              >
+            </canvas>
+          </div>
+          
+    </mat-tab>
     <mat-tab label="מסמכים">
 
 

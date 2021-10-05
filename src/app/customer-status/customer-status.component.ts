@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DataAreaSettings, DataControl, openDialog, SelectValueDialogComponent } from '@remult/angular';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { Label } from 'ng2-charts';
 import { BackendMethod, Field, getFields, Remult } from 'remult';
 import { callRivhit, getRivhitItems } from '../create-invoice/invoice';
 import { Customer } from '../customers/customer';
@@ -19,7 +21,9 @@ export class CustomerStatusComponent implements OnInit {
     if (lastCustomerId) {
       this.setCustomer(await this.remult.repo(Customer).findId(lastCustomerId));
     }
+
   }
+
   @DataControl<CustomerStatusComponent>({
     hideDataOnInput: true,
     getValue: (o) => o.customer?.name,
@@ -58,7 +62,7 @@ export class CustomerStatusComponent implements OnInit {
     this.customer = c;
     localStorage.setItem("lastCustomer", c?.id);
     this.status = await CustomerStatusComponent.getInfo(c.id);
-    console.table(this.status.documents);
+    this.initChart();
   }
   get $() { return getFields(this) }
   async open(d: Document) {
@@ -90,7 +94,7 @@ export class CustomerStatusComponent implements OnInit {
       }),
       open: await callRivhit("Customer.OpenDocuments", {
         customer_id: c.rivhitId
-        
+
       }).then((r: { open_documents: OpenDocument[] }) => {
         for (const d of r.open_documents) {
           d.sortDate = toSortableDate(d.issue_date);
@@ -101,6 +105,43 @@ export class CustomerStatusComponent implements OnInit {
       }),
 
     }
+  }
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    
+    
+  };
+  public barChartLabels: Label[] = [];
+  public barChartType: ChartType = 'horizontalBar';
+  public barChartLegend = true;
+  public barChartPlugins = [];
+  thisYear: ChartDataSets = { data: [], label: 'נוכחי' };
+  previousYear: ChartDataSets = { data: [], label: 'שנה קודמת' };
+  public barChartData: ChartDataSets[] = [
+    this.thisYear, this.previousYear
+  ];
+
+  initChart() {
+    let m = "ינואר,פברואר,מרץ,אפריל,מאי,יוני,יולי,אוגוסט,ספטמבר,אוקטובר,נובמבר,דצמבר".split(',');
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
+    for (let index = 0; index < 12; index++) {
+      this.thisYear.data.push(this.sum(year, month));
+      this.previousYear.data.push(this.sum(year - 1, month));
+      this.barChartLabels.push(m[month]);
+      month -= 1;
+      if (month < 0) {
+        month = 11;
+        year -= 1;
+      }
+    }
+  }
+  sum(year: number, month: number) {
+    let m = (month + 1).toString();
+    if (m.length == 1)
+      m = '0' + m;
+    let filter = year.toString() + '-' + m;
+    return this.status.documents.filter(d => d.sortDate.startsWith(filter)).map(d => d.amount - d.total_vat).reduce((a, b) => a + b, 0);
   }
 }
 interface customerStatus {

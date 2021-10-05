@@ -11,7 +11,7 @@ import * as helmet from 'helmet';
 import * as jwt from 'express-jwt';
 import * as compression from 'compression';
 
-import '../app/app.module';
+import '../app/app-routing.module';
 import { Products } from '../app/products/products';
 import { OrderDetails } from '../app/orders/orders';
 async function startup() {

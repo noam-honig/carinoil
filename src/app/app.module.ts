@@ -1,3 +1,4 @@
+import { ChartsModule } from 'ng2-charts';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -45,6 +46,7 @@ import { CustomerStatusComponent } from './customer-status/customer-status.compo
     CustomerStatusComponent
   ],
   imports: [
+    ChartsModule,
     MatTabsModule,
     BrowserModule,
     AppRoutingModule,
