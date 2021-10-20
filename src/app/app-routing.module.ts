@@ -32,7 +32,7 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes),
     RemultModule,
   JwtModule.forRoot({
-    config: { tokenGetter: () => sessionStorage.getItem('auth_token') }
+    config: { tokenGetter: () => localStorage.getItem('auth_token') }
   })],
   providers: [AdminGuard, { provide: ErrorHandler, useClass: ShowDialogOnErrorErrorHandler }],
   exports: [RouterModule]
