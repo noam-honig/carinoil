@@ -67,15 +67,15 @@ export class AppComponent implements OnInit {
   setToken(token: string) {
     if (token) {
       this.remult.setUser(<UserInfo>new JwtHelperService().decodeToken(token));
-      sessionStorage.setItem("auth_token", token);
+      localStorage.setItem("auth_token", token);
     }
     else {
       this.remult.setUser(undefined);
-      sessionStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_token");
     }
   }
   ngOnInit(): void {
-    this.setToken(sessionStorage.getItem('auth_token'))
+    this.setToken(localStorage.getItem('auth_token'))
   }
 
   signOut() {
