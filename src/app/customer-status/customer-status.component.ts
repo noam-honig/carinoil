@@ -83,7 +83,8 @@ export class CustomerStatusComponent implements OnInit {
     return {
       documents: await callRivhit("Document.List", {
         from_customer_id: c.rivhitId,
-        to_customer_id: c.rivhitId
+        to_customer_id: c.rivhitId,
+        from_date:'2019-01-01'
       }).then((r: { document_list: Document[] }) => {
         for (const d of r.document_list) {
           d.sortDate = toSortableDate(d.document_date);
