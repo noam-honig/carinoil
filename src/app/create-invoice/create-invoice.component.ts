@@ -69,6 +69,21 @@ export class CreateInvoiceComponent implements OnInit {
     this.items = (await Invoice.buildItemsInInvoice(this.args.order.id, this.args.order.customer?.rivhitId)).map(y =>
       set(new ItemInInvoice(), y)
     );
+    if (this.args.order.invoiceDraft) {
+      for (const { quantity, unitPrice, productId, rivhitId, orderDetailId } of this.args.order.invoiceDraft) {
+        let item = this.items.find(x => x.rivhitId == rivhitId && x.orderDetailId == orderDetailId);
+        if (item) {
+          set(item, {
+            quantity,
+            unitPrice
+          });
+        }
+        else {
+          let r = await Invoice.buildItemsInInvoice(this.args.order.id, this.args.order.customer?.rivhitId, productId);
+          this.items.push(set(new ItemInInvoice(), { ...r[0], quantity, unitPrice }));
+        }
+      }
+    }
   }
   async addProduct() {
     let p = await this.remult.repo(Products).find();
@@ -86,6 +101,15 @@ export class CreateInvoiceComponent implements OnInit {
   getUnitPrice(item: ItemInInvoice) {
     return getFields(item).unitPrice;
   }
+  async saveDraft() {
+    this.args.order.invoiceDraft = this.items;
+    await this.args.order.save();
+    this.ref.close();
+  }
+  cancel() {
+    this.args.order._.undoChanges();
+    this.ref.close();
+  }
   async createInvoice() {
     if (!this.args.order.customer)
       throw "לא נבחר לקוח";
@@ -100,15 +124,15 @@ export class CreateInvoiceComponent implements OnInit {
 
     }
 
-    if (this.args.order.wasChanged())
-      this.args.order.save();
+
     let inv = this.remult.repo(Invoice).create({
       customer: this.args.order.customer,
       orderId: this.args.order.id,
       details: this.items
     });
     await inv.create();
-    await this.args.order.save();
+    this.args.order.invoiceDraft = [];
+    this.args.order.save();
     this.ref.close();
     setTimeout(() => {
       window.open(inv.apiResponse.document_link);

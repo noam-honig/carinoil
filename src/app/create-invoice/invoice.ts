@@ -22,7 +22,7 @@ export class Invoice extends IdEntity {
     apiResponse: any;
 
     @BackendMethod({ allowed: Roles.admin })
-    async create(remult?: Remult) {
+    async create() {
         if (!this.isNew())
             throw "Invalid Operation";
         this.date = new Date();
@@ -79,7 +79,8 @@ export class Invoice extends IdEntity {
                 quantity: quantity - quantityDelivered > 0 ? quantity - quantityDelivered : 0,
                 quantityInStock,
                 unitPrice: 0,
-                quantityDelivered
+                quantityDelivered,
+                productId:p.id
 
             })
         }
@@ -117,6 +118,7 @@ export class Invoice extends IdEntity {
 
 export class ItemInInvoice {
     orderDetailId: string;
+    productId:string;
     productName: string;
     rivhitId: number;
     catalog_number: string;

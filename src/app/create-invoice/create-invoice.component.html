@@ -28,7 +28,8 @@
     <data-area [settings]="area2"></data-area>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button  (click)="addProduct()">הוסף מוצר</button>
+    <button mat-raised-button (click)="addProduct()">הוסף מוצר</button>
     <button mat-raised-button color="primary" (click)="createInvoice()">צור חשבונית</button>
-    <button mat-raised-button [mat-dialog-close]>סגור</button>
+    <button mat-raised-button (click)="this.saveDraft()">שמור </button>
+    <button mat-raised-button (click)="cancel()">בטל</button>
 </mat-dialog-actions>

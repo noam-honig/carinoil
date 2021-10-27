@@ -1,6 +1,7 @@
 import { DataControl } from '@remult/angular';
 import { Entity, Field, IdEntity, IntegerField, isBackend, Remult, Validators } from 'remult';
 import { InputTypes } from 'remult/inputTypes';
+import { ItemInInvoice } from '../create-invoice/invoice';
 import { Customer } from '../customers/customer';
 import { Products } from '../products/products';
 import { Roles } from '../users/roles';
@@ -10,7 +11,7 @@ import { Roles } from '../users/roles';
     allowApiInsert: true,
     allowApiRead: Roles.admin,
     allowApiDelete: Roles.admin,
-    
+
     defaultOrderBy: (self) => [self.handled, self.createDate.descending()]
 }
     , (options, remult) =>
@@ -55,6 +56,8 @@ export class Orders extends IdEntity {
     customer: Customer;
     @Field({ caption: 'הערה של רמי' })
     ramiComment: string;
+    @Field()
+    invoiceDraft: ItemInInvoice[];
 }
 @Entity("OrderDetails", {
     allowApiUpdate: Roles.admin,
