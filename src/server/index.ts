@@ -13,12 +13,7 @@ import * as compression from 'compression';
 
 import '../app/app-routing.module';
 import '../app/app.component';
-import { Products } from '../app/products/products';
-import { OrderDetails } from '../app/orders/orders';
-import { getDocumentDetailsFromRivhit } from '../app/logistics/rivhit-document-details';
-import { createOrianOutGoingMessage } from '../app/logistics/orian-outgoing-message';
-import * as xml from 'xml'
-import { Builder } from 'xml2js';
+
 
 async function startup() {
     config(); //loads the configuration from the .env file
@@ -56,6 +51,9 @@ async function startup() {
             res.sendStatus(500);
         }
     });
+
+   
+
 
     let port = process.env.PORT || 3000;
     app.listen(port);
