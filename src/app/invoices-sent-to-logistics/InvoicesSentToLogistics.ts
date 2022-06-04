@@ -8,9 +8,10 @@ import { Roles } from "../users/roles";
 })
 export class InvoiceSentToLogistics extends IdEntity {
 
-    @DataControl({ width: '60' })
+    @DataControl({ width: '40' })
     @Field({ caption: 'סוג' })
     documentType: number = 0;
+    @DataControl({ width: '60' })
     @Field({ caption: '#' })
     documentNumber: number = 0;
     @DataControl({ width: '100' })
