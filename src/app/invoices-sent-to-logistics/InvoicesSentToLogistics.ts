@@ -14,6 +14,7 @@ export class InvoiceSentToLogistics extends IdEntity {
     @DataControl({ width: '100' })
     @DateOnlyField({ caption: 'תאריך' })
     invoiceDate!: Date;
+    @DataControl({ width: '250' })
     @Field({ caption: 'לקוח' })
     customerName: string = '';
     @DataControl({ width: '100' })
