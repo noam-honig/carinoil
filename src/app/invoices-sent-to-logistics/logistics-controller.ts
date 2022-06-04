@@ -1,3 +1,4 @@
+import { ValueConverter } from "@angular/compiler/src/render3/view/template";
 import { BackendMethod, ProgressListener, Remult } from "remult";
 import { callRivhit, RivhitDocument } from "../create-invoice/invoice";
 import { Roles } from "../users/roles";
@@ -6,6 +7,7 @@ import { LogisticsLog } from "./logisitcs-log";
 import { createOrianOutGoingMessage } from "./orian-outgoing-message";
 import { getDocumentDetailsFromRivhit } from "./rivhit-document-details";
 import { sendDataToFtp } from "./sendFtp";
+import { DateOnlyValueConverter } from 'remult/valueConverters';
 
 let running = false;
 export class LogisticsController {
@@ -45,7 +47,7 @@ export class LogisticsController {
                     console.log("processing new " + i.documentType + "/" + i.documentNumber + " - " + d.document_date);
                     i.transmitDate = new Date();
                     let sp = d.document_date.split('/');
-                    i.invoiceDate = new Date(sp[2] + '-' + sp[1] + '-' + sp[0]);
+                    i.invoiceDate = DateOnlyValueConverter.fromJson!(sp[2] + '-' + sp[1] + '-' + sp[0]);
                     i.customerName = d.customer_name;
                     i.amount = d.amount;
                     try {
