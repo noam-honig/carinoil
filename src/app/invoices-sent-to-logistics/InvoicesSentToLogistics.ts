@@ -19,7 +19,7 @@ export class InvoiceSentToLogistics extends IdEntity {
     @DataControl({ width: '100' })
     @Field({ caption: 'סכום' })
     amount: number = 0;
-    @DataControl({ width: '50' })
+    @DataControl({ width: '180' })
     @Field({ allowApiUpdate: false, caption: 'שודר' })
     transmitDate: Date = new Date();
     @Field({ caption: 'סטטוס' })
