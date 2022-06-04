@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, Route,  ActivatedRoute } from '@angular/router';
+import { Router, Route, ActivatedRoute } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 
-import { BackendMethod, Remult,  UserInfo } from 'remult';
+import { BackendMethod, Remult, UserInfo } from 'remult';
 
 import { DialogService } from './common/dialog';
 import { InputField, openDialog, RouteHelperService } from '@remult/angular';
@@ -46,8 +46,14 @@ export class AppComponent implements OnInit {
   @BackendMethod({ allowed: true })
   static async signIn(user: string, password: string, remult?: Remult) {
     let result: UserInfo;
+    if (!password)
+      throw "חסר סיסמה";
     let u = await remult.repo(Users).findFirst(h => h.name.isEqualTo(user));
-    if (u)
+    if (u) {
+      if (u.password == '') {
+        await u.hashAndSetPassword(password);
+        await u.save();
+      }
       if (await u.passwordMatches(password)) {
         result = {
           id: u.id,
@@ -58,6 +64,7 @@ export class AppComponent implements OnInit {
           result.roles.push(Roles.admin);
         }
       }
+    }
 
     if (result) {
       return (await import('jsonwebtoken')).sign(result, process.env.TOKEN_SIGN_KEY);
