@@ -3,7 +3,7 @@ import { BackendMethod, ProgressListener, Remult } from "remult";
 import { callRivhit, RivhitDocument } from "../create-invoice/invoice";
 import { Roles } from "../users/roles";
 import { InvoiceSentToLogistics } from "./InvoicesSentToLogistics";
-import { LogisticsLog } from "./logisitcs-log";
+import { LogisticsLog } from "./logistics-log";
 import { createOrianOutGoingMessage } from "./orian-outgoing-message";
 import { getDocumentDetailsFromRivhit } from "./rivhit-document-details";
 import { sendDataToFtp } from "./sendFtp";
@@ -31,14 +31,14 @@ export class LogisticsController {
                 from_date: dateToString(lastDate),
                 to_date: dateToString(new Date()),
                 from_document_type: 1,
-                to_document_type: 3
+                to_document_type: 4
 
             });
 
             let counter = 0;
             let newItems = 0;
             const repo = remult!.repo(InvoiceSentToLogistics);
-            for (const d of result.document_list) {
+            for (const d of result.document_list.filter(d => d.document_type != 3)) {
                 counter++;
                 if (progress)
                     progress.progress(counter / result.document_list.length);

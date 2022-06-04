@@ -1,4 +1,4 @@
-import { Entity, Field, IdEntity, IntegerField } from "remult";
+import { Entity, Field, IdEntity } from "remult";
 import { Roles } from "../users/roles";
 @Entity("logisticsLog", { allowApiRead: Roles.admin })
 export class LogisticsLog extends IdEntity {
