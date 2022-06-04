@@ -40,7 +40,7 @@ export class LogisticsController {
                 counter++;
                 let i = await repo.findFirst({ where: x => x.invoiceNumber.isEqualTo(d.document_number), createIfNotFound: true })
                 if (i.isNew()) {
-                    console.log("processing new " + i.invoiceNumber + " - " + i.invoiceDate);
+                    console.log("processing new " + i.invoiceNumber + " - " + d.document_date);
                     i.transmitDate = new Date();
                     let sp = d.document_date.split('/');
                     i.invoiceDate = new Date(sp[2] + '-' + sp[1] + '-' + sp[0]);
