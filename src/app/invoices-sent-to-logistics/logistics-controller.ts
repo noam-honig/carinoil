@@ -29,7 +29,7 @@ export class LogisticsController {
                 from_date: dateToString(lastDate),
                 to_date: dateToString(new Date()),
                 from_document_type: 1,
-                to_document_type: 2
+                to_document_type: 3
 
             });
 
