@@ -60,11 +60,11 @@ export interface Line {
     NOTES: string;
     INVENTORYSTATUS: string;
 }
-export function createOrianOutGoingMessage(number: number, d: RivhitDocumentDetails) {
+export function createOrianOutGoingMessage(d: RivhitDocumentDetails) {
     const date = d.document_date.split('/');
     const time = d.documnet_time.split(':');
     return {
-        filename: 'OUTBOUNDSTATUS_' + date[2] + date[1] + date[0] + time[0] + time[1] + time[2] + "_CAR_" + number + ".xml",
+        filename: 'OUTBOUNDSTATUS_' + date[2] + date[1] + date[0] + time[0] + time[1] + time[2] + "_CAR_" + d.document_number.replace(/\//g, '') + ".xml",
         xml: new Builder().buildObject({
             DATACOLLECTION: [{
                 DATA: [{

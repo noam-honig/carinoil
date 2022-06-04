@@ -36,10 +36,10 @@ export class InvoicesSentToLogisticsComponent implements OnInit {
     }
     ],
     rowButtons: [
-      { name: 'הצג', click: (d) => openDocument(1, d.invoiceNumber) },
+      { name: 'הצג', click: (d) => openDocument(d.documentType, d.documentNumber) },
       {
         name: 'XML', click: async d => {
-          const doc = await LogisticsController.createXml(d.invoiceNumber);
+          const doc = await LogisticsController.createXml(d.documentType, d.documentNumber);
           var element = document.createElement('a');
           element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(doc.xml));
           element.setAttribute('download', doc.filename);

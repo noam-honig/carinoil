@@ -10,6 +10,8 @@ import { PostgresDataProvider, verifyStructureOfAllEntities } from 'remult/postg
 import * as helmet from 'helmet';
 import * as jwt from 'express-jwt';
 import * as compression from 'compression';
+import sslRedirect from 'heroku-ssl-redirect';
+
 
 import '../app/app-routing.module';
 import '../app/app.component';
@@ -34,6 +36,7 @@ async function startup() {
     }
 
     let app = express();
+    app.use(sslRedirect());
     app.use(jwt({ secret: process.env.TOKEN_SIGN_KEY, credentialsRequired: false, algorithms: ['HS256'] }));
     app.use(compression());
     app.use(
@@ -53,8 +56,8 @@ async function startup() {
         }
     });
     const interval = +process.env.INVOICE_CHECK_INTERVAL;
-    console.log({interval});
-    if (interval > 0) { 
+    console.log({ interval });
+    if (interval > 0) {
         setInterval(async () => {
             try {
                 //@ts-ignore

@@ -29,7 +29,7 @@ export class LogisticsController {
                 from_date: dateToString(lastDate),
                 to_date: dateToString(new Date()),
                 from_document_type: 1,
-                to_document_type: 1
+                to_document_type: 2
 
             });
 
@@ -39,9 +39,9 @@ export class LogisticsController {
             for (const d of result.document_list) {
                 counter++;
                 progress.progress(counter / result.document_list.length);
-                let i = await repo.findFirst({ where: x => x.invoiceNumber.isEqualTo(d.document_number), createIfNotFound: true })
+                let i = await repo.findFirst({ where: x => x.documentNumber.isEqualTo(d.document_number).and(x.documentType.isEqualTo(d.document_type)), createIfNotFound: true })
                 if (i.isNew()) {
-                    console.log("processing new " + i.invoiceNumber + " - " + d.document_date);
+                    console.log("processing new " + i.documentType + "/" + i.documentNumber + " - " + d.document_date);
                     i.transmitDate = new Date();
                     let sp = d.document_date.split('/');
                     i.invoiceDate = new Date(sp[2] + '-' + sp[1] + '-' + sp[0]);
@@ -49,7 +49,7 @@ export class LogisticsController {
                     i.amount = d.amount;
                     try {
                         newItems++;
-                        const o = await LogisticsController.createXml(d.document_number);
+                        const o = await LogisticsController.createXml(d.document_type, d.document_number);
                         await sendDataToFtp(o.xml, o.filename);
                         i.status = "ok";
 
@@ -75,8 +75,8 @@ export class LogisticsController {
         }
     }
     @BackendMethod({ allowed: Roles.admin })
-    static async createXml(number: number) {
-        return await createOrianOutGoingMessage(number, await getDocumentDetailsFromRivhit(number));
+    static async createXml(type: number, number: number) {
+        return await createOrianOutGoingMessage(await getDocumentDetailsFromRivhit(type, number));
     }
 }
 
@@ -90,6 +90,4 @@ export function dateToString(today: Date) {
     if (mm < 10) mm = '0' + mm;
 
     return dd + '/' + mm + '/' + yyyy;
-
-
 }

@@ -58,9 +58,9 @@ export interface RivhitDocumentDetails {
 
 
 
-export async function getDocumentDetailsFromRivhit(number: number): Promise<RivhitDocumentDetails> {
+export async function getDocumentDetailsFromRivhit(type: number, number: number): Promise<RivhitDocumentDetails> {
     return await callRivhit("Document.Details", {
-        "document_type": "1",
+        "document_type": type,
         "document_number": number.toString()
     });
 }

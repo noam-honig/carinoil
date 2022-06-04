@@ -4,13 +4,15 @@ import { Roles } from "../users/roles";
 
 @Entity<InvoiceSentToLogistics>('invoicesSentToLogistics', {
     allowApiRead: Roles.admin,
-    defaultOrderBy: self => [self.invoiceDate.descending(), self.invoiceNumber.descending()]
+    defaultOrderBy: self => [self.invoiceDate.descending(), self.transmitDate.descending()]
 })
 export class InvoiceSentToLogistics extends IdEntity {
 
     @DataControl({ width: '60' })
+    @Field({ caption: 'סוג' })
+    documentType: number = 0;
     @Field({ caption: '#' })
-    invoiceNumber: number = 0;
+    documentNumber: number = 0;
     @DataControl({ width: '100' })
     @DateOnlyField({ caption: 'תאריך' })
     invoiceDate!: Date;
