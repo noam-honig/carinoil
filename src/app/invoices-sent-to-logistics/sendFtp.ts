@@ -1,7 +1,8 @@
-import * as ftpClient from 'ftp';
+
 import { Readable } from 'stream';
 
 export async function sendDataToFtp(data: string, targetFileName: string) {
+    const ftpClient = await import('ftp');
     await new Promise((res, err) => {
         const c = new ftpClient();
         c.on('ready', () => {

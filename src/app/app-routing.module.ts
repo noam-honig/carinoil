@@ -12,6 +12,7 @@ import { OrdersComponent } from './orders/orders.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { CustomersComponent } from './customers/customers.component';
 import { CustomerStatusComponent } from './customer-status/customer-status.component';
+import { InvoicesSentToLogisticsComponent } from './invoices-sent-to-logistics/invoices-sent-to-logistics.component';
 
 
 const routes: Routes = [
@@ -20,7 +21,7 @@ const routes: Routes = [
   { path: 'כרטיס לקוח', component: CustomerStatusComponent, canActivate: [AdminGuard] },
   { path: 'מוצרים', component: ProductsComponent, canActivate: [AdminGuard] },
   { path: 'לקוחות', component: CustomersComponent, canActivate: [AdminGuard] },
-
+  { path: 'ממשק orian', component: InvoicesSentToLogisticsComponent, canActivate: [AdminGuard] },
   { path: 'משתמשים', component: UsersComponent, canActivate: [AdminGuard] },
 
   { path: '', redirectTo: '/בית', pathMatch: 'full' },

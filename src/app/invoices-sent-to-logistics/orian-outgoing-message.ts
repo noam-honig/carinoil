@@ -1,5 +1,6 @@
-import { RivhitDocumentDetails } from "./rivhit-document-details";
+
 import { Builder } from 'xml2js';
+import { RivhitDocumentDetails } from './rivhit-document-details';
 
 export interface Welcome2 {
     DATACOLLECTION: Datacollection[];
@@ -63,7 +64,7 @@ export function createOrianOutGoingMessage(number: number, d: RivhitDocumentDeta
     const date = d.document_date.split('/');
     const time = d.documnet_time.split(':');
     return {
-        filename: 'OUTBOUNDSTATUS_'+date[2]+date[1]+date[0]+time[0]+time[1]+time[2]+"_CAR_"+number+".xml",
+        filename: 'OUTBOUNDSTATUS_' + date[2] + date[1] + date[0] + time[0] + time[1] + time[2] + "_CAR_" + number + ".xml",
         xml: new Builder().buildObject({
             DATACOLLECTION: [{
                 DATA: [{

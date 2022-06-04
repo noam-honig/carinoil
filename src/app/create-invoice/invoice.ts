@@ -130,12 +130,32 @@ export class ItemInInvoice {
     unitPrice: number;
     quantityDelivered: number;
 }
+export interface RivhitDocument {
+    document_type: number;
+    document_number: number;
+    document_date: string;
+    sortDate: string;
+    document_time: string;
+    amount: number;
+    amount_exempt: number;
+    customer_id: number;
+    agent_id: number;
+    is_cancelled: boolean;
+    customer_name: string;
+    order: string;
+    sort_code: number;
+    total_vat: number;
+    document_type_name: string;
+    is_accounting: boolean;
+    project_id: number;
+  }
+  
 
 export async function getRivhitItems(): Promise<{ item_list: { item_id: number, sale_nis: number, item_part_num: string }[] }> {
     return callRivhit("Item.List", {});
 }
 export async function callRivhit(api: string, args: any) {
-    console.time(api);
+    //console.time(api);
     var raw = JSON.stringify({
         api_token: process.env.API_KEY,
         ...args
@@ -152,7 +172,7 @@ export async function callRivhit(api: string, args: any) {
         .catch(error => { throw error?.client_message || error });
     if (r.error_code != 0)
         throw api + ":" + r.client_message;
-    console.timeEnd(api);
+    //console.timeEnd(api);
     return r.data;
 }
 export interface CustomerInfoInRivhit {

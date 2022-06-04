@@ -30,6 +30,7 @@ import { OrderDetailsComponent } from './order-details/order-details.component';
 import { CustomersComponent } from './customers/customers.component';
 import { CreateInvoiceComponent } from './create-invoice/create-invoice.component';
 import { CustomerStatusComponent } from './customer-status/customer-status.component';
+import { InvoicesSentToLogisticsComponent } from './invoices-sent-to-logistics/invoices-sent-to-logistics.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { CustomerStatusComponent } from './customer-status/customer-status.compo
     OrderDetailsComponent,
     CustomersComponent,
     CreateInvoiceComponent,
-    CustomerStatusComponent
+    CustomerStatusComponent,
+    InvoicesSentToLogisticsComponent
   ],
   imports: [
     ChartsModule,

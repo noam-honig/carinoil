@@ -74,6 +74,9 @@
     "typescript": "~4.1.5"
   },
   "browser": {
+    "xml2js": false,
+    "stream": false,
+    "ftp": false,
     "jsonwebtoken": false,
     "password-hash": false,
     "node-fetch": false

@@ -3,7 +3,7 @@ import { DataAreaSettings, DataControl, openDialog, SelectValueDialogComponent }
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { BackendMethod, Field, getFields, Remult } from 'remult';
-import { callRivhit, getRivhitItems } from '../create-invoice/invoice';
+import { callRivhit, getRivhitItems, RivhitDocument } from '../create-invoice/invoice';
 import { Customer } from '../customers/customer';
 import { Roles } from '../users/roles';
 
@@ -43,7 +43,7 @@ export class CustomerStatusComponent implements OnInit {
     displayValue: x => x.customer?.name
   })
   customer: Customer;
-  filter(doc: Document) {
+  filter(doc: RivhitDocument) {
     return doc.sortDate <= this.to && doc.sortDate >= this.from;
   }
   total() {
@@ -65,11 +65,8 @@ export class CustomerStatusComponent implements OnInit {
     this.initChart();
   }
   get $() { return getFields(this) }
-  async open(d: Document) {
-    let doc = await CustomerStatusComponent.openDocument(d.document_type, d.document_number);
-    setTimeout(() => {
-      window.open(doc);
-    }, 100);;
+  async open(d: RivhitDocument) {
+    await openDocument(d.document_type, d.document_number);
   }
   @BackendMethod({ allowed: Roles.admin })
   static async openDocument(document_type: number, document_number: number, remult?: Remult): Promise<string> {
@@ -84,8 +81,8 @@ export class CustomerStatusComponent implements OnInit {
       documents: await callRivhit("Document.List", {
         from_customer_id: c.rivhitId,
         to_customer_id: c.rivhitId,
-        from_date:'2019-01-01'
-      }).then((r: { document_list: Document[] }) => {
+        from_date: '2019-01-01'
+      }).then((r: { document_list: RivhitDocument[] }) => {
         for (const d of r.document_list) {
           d.sortDate = toSortableDate(d.document_date);
         }
@@ -140,8 +137,8 @@ export class CustomerStatusComponent implements OnInit {
         year -= 1;
       }
     }
-    
-    
+
+
   }
   sum(year: number, month: number) {
     let m = (month + 1).toString();
@@ -152,27 +149,8 @@ export class CustomerStatusComponent implements OnInit {
   }
 }
 interface customerStatus {
-  documents: Document[];
+  documents: RivhitDocument[];
   open?: OpenDocument[];
-}
-interface Document {
-  document_type: number;
-  document_number: number;
-  document_date: string;
-  sortDate: string;
-  document_time: string;
-  amount: number;
-  amount_exempt: number;
-  customer_id: number;
-  agent_id: number;
-  is_cancelled: boolean;
-  customer_name: string;
-  order: string;
-  sort_code: number;
-  total_vat: number;
-  document_type_name: string;
-  is_accounting: boolean;
-  project_id: number;
 }
 export interface OpenDocument {
   balance: number;
@@ -188,6 +166,13 @@ export interface OpenDocument {
   total_amount_mtc: number;
   sortDate: string;
 }
+export async function openDocument(type: number, document: number) {
+  let doc = await CustomerStatusComponent.openDocument(type, document);
+  setTimeout(() => {
+    window.open(doc);
+  }, 100);;
+}
+
 function toSortableDate(d: string) {
   return d.substr(6, 4) + '-' + d.substr(3, 2) + d.substr(0, 2);
 }
