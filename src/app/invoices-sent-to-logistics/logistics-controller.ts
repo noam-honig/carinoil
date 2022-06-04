@@ -1,4 +1,4 @@
-import { BackendMethod, Remult } from "remult";
+import { BackendMethod, ProgressListener, Remult } from "remult";
 import { callRivhit, RivhitDocument } from "../create-invoice/invoice";
 import { Roles } from "../users/roles";
 import { InvoiceSentToLogistics } from "./InvoicesSentToLogistics";
@@ -10,8 +10,8 @@ import { sendDataToFtp } from "./sendFtp";
 let running = false;
 export class LogisticsController {
 
-    @BackendMethod({ allowed: Roles.admin })
-    static async checkForNewInvoices(remult?: Remult) {
+    @BackendMethod({ allowed: Roles.admin, queue: true })
+    static async checkForNewInvoices(remult?: Remult, progress?: ProgressListener) {
         if (running)
             throw "check for new invoices already running";
         running = true;
@@ -38,6 +38,7 @@ export class LogisticsController {
             const repo = remult!.repo(InvoiceSentToLogistics);
             for (const d of result.document_list) {
                 counter++;
+                progress.progress(counter / result.document_list.length);
                 let i = await repo.findFirst({ where: x => x.invoiceNumber.isEqualTo(d.document_number), createIfNotFound: true })
                 if (i.isNew()) {
                     console.log("processing new " + i.invoiceNumber + " - " + d.document_date);
