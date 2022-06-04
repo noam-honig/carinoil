@@ -38,7 +38,8 @@ export class LogisticsController {
             const repo = remult!.repo(InvoiceSentToLogistics);
             for (const d of result.document_list) {
                 counter++;
-                progress.progress(counter / result.document_list.length);
+                if (progress)
+                    progress.progress(counter / result.document_list.length);
                 let i = await repo.findFirst({ where: x => x.documentNumber.isEqualTo(d.document_number).and(x.documentType.isEqualTo(d.document_type)), createIfNotFound: true })
                 if (i.isNew()) {
                     console.log("processing new " + i.documentType + "/" + i.documentNumber + " - " + d.document_date);
