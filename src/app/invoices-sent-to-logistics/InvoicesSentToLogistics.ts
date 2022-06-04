@@ -15,7 +15,7 @@ export class InvoiceSentToLogistics extends IdEntity {
     @Field({ caption: '#' })
     documentNumber: number = 0;
     @DataControl({ width: '100' })
-    @DateOnlyField({ caption: 'תאריך' })
+    @DateOnlyField({ caption: 'תאריך', displayValue: (_, d) => d.toLocaleDateString() })
     invoiceDate!: Date;
     @DataControl({ width: '250' })
     @Field({ caption: 'לקוח' })
