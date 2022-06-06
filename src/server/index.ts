@@ -67,6 +67,8 @@ async function startup() {
             }
         }, interval * 1000);
     }
+    //const xml = await LogisticsController.createXml(1,6155);
+    //fs.writeFileSync('C:/temp/'+xml.filename,xml.xml);
 
 
     let port = process.env.PORT || 3000;

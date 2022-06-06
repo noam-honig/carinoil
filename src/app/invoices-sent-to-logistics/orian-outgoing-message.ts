@@ -63,13 +63,14 @@ export interface Line {
 export function createOrianOutGoingMessage(d: RivhitDocumentDetails) {
     const date = d.document_date.split('/');
     const time = d.documnet_time.split(':');
+    const docNumber = d.document_number.replace(/\//g, '');
     return {
-        filename: 'OUTBOUNDSTATUS_' + date[2] + date[1] + date[0] + time[0] + time[1] + time[2] + "_CAR_" + d.document_number.replace(/\//g, '') + ".xml",
+        filename: 'OUTBOUND_'+docNumber+"_" + date[2] + date[1] + date[0] + time[0] + time[1] + time[2] + "_CAR.xml",
         xml: new Builder().buildObject({
             DATACOLLECTION: [{
                 DATA: [{
                     CONSIGNEE: 'CAR',
-                    ORDERID: d.document_number,
+                    ORDERID: docNumber,
                     ORDERTYPE: 'CUSTOMER',
                     REFERENCEORD: '',
                     TARGETCOMPANY: 'CAR002',
@@ -103,14 +104,14 @@ export function createOrianOutGoingMessage(d: RivhitDocumentDetails) {
                     CONTACT2FAX: '',
                     CONTACT2PHONE: '',
                     LINES: {
-                        LINE: d.items.map(item =>
+                        LINE: d.items.filter(item=>item.catalog_number).map(item =>
                         ({
                             ORDERLINE: item.line,
                             REFERENCEORDLINE: '',
                             SKU: item.catalog_number,
                             QTYORIGINAL: item.quantity,
                             INVENTORYSTATUS: 'AVAILABLE',
-                            NOTES: item.description,
+                            NOTES: '',
                         } as Line))
                     }
                 }]
