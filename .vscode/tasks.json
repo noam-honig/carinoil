@@ -33,10 +33,18 @@
 				"npm: dev-ng",
 				"npm: dev-node"
 			],
-			"detail":"runs both dev-ng and dev-node",
-			"problemMatcher": [
-			],
+			"detail": "runs both dev-ng and dev-node",
+			"problemMatcher": [],
 			"isBackground": true
+		},
+		{
+			"type": "npm",
+			"script": "dev-sync",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"label": "npm: dev-sync",
+			"detail": "ts-node --project tsconfig.server.json src/server/sync"
 		}
 	]
 }

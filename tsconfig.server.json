@@ -4,9 +4,10 @@
     "outDir": "./dist/server",
     "module": "commonjs",
     "skipLibCheck": true,
-    "emitDecoratorMetadata":true
+    "emitDecoratorMetadata": true
   },
   "files": [
-    "./src/server/index.ts"
+    "./src/server/index.ts",
+    "./src/server/sync.ts"
   ]
 }

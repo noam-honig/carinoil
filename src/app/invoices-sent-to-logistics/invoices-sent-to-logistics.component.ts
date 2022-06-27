@@ -28,6 +28,7 @@ export class InvoicesSentToLogisticsComponent implements OnInit {
     },
     {
       name: 'הפעל תקשורת עכשיו',
+      visible:()=> false,
       click: async () => {
         let log = await LogisticsController.checkForNewInvoices();
         this.dialog.error(log.newItems + " חשבוניות חדשות");

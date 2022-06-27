@@ -9,7 +9,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "dev-ng": "ng serve  --proxy-config proxy.conf.json",
-    "dev-node": "ts-node-dev --project tsconfig.server.json src/server/"
+    "dev-node": "ts-node-dev --project tsconfig.server.json src/server/",
+    "dev-sync": "ts-node --project tsconfig.server.json src/server/sync",
+    "sync":"node dist/server/server/sync"
   },
   "private": true,
   "dependencies": {
