@@ -53,7 +53,7 @@ export class LogisticsController {
                     try {
                         newItems++;
                         const o = await LogisticsController.createXml(d.document_type, d.document_number);
-                        await sendDataToFtp(o.xml, o.filename);
+                        await sendDataToFtp(o.xml, 'IN/'+o.filename);
                         i.status = "ok";
 
                     }
