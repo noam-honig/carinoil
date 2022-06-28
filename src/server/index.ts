@@ -14,7 +14,7 @@ import sslRedirect from 'heroku-ssl-redirect';
 import '../app/app-routing.module';
 import '../app/app.component';
 import { LogisticsController } from '../app/invoices-sent-to-logistics/logistics-controller';
-import { getDataProvider } from './sync';
+import { getDataProvider } from "./getDataProvider";
 
 
 async function startup() {
@@ -60,3 +60,4 @@ async function startup() {
     app.listen(port);
 }
 startup();
+
