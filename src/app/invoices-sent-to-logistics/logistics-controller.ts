@@ -31,14 +31,15 @@ export class LogisticsController {
                 from_date: dateToString(lastDate),
                 to_date: dateToString(new Date()),
                 from_document_type: 1,
-                to_document_type: 4
+                to_document_type: 11
 
             });
 
             let counter = 0;
             let newItems = 0;
             const repo = remult!.repo(InvoiceSentToLogistics);
-            for (const d of result.document_list.filter(d => d.document_type != 3)) {
+            const types = [1,2,4,11];
+            for (const d of result.document_list.filter(d => types.includes(d.document_type))) {
                 counter++;
                 if (progress)
                     progress.progress(counter / result.document_list.length);
