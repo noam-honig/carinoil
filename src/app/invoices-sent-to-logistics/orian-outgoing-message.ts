@@ -102,7 +102,7 @@ export function createOrianOutGoingMessage(d: RivhitDocumentDetails) {
     const docNumber = d.document_number.replace(/\//g, '');
     let CITY = d.customer_city;
     let STREET1 = d.customer_address;
-    if (!CITY && d.document_number.startsWith('02')) {
+    if (!CITY ) {
 
         let z = STREET1.indexOf(',');
         if (z > 0) {
