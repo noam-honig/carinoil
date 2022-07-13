@@ -15,13 +15,7 @@ export class InvoiceSentToLogistics extends IdEntity {
     @Field({ caption: '#' })
     documentNumber: number = 0;
     @DataControl({ width: '100' })
-    @DateOnlyField({
-        caption: 'תאריך', displayValue: (_, d) => {
-            let offset = d.getTimezoneOffset();
-            return new Date(d.valueOf() + offset * 60 * 1000).toLocaleDateString();
-            //d.toLocaleDateString();
-        }
-    })
+    @DateOnlyField({ caption: 'תאריך', displayValue: (_, d) => d.toLocaleDateString() })
     invoiceDate!: Date;
     @DataControl({ width: '250' })
     @Field({ caption: 'לקוח' })
@@ -30,7 +24,13 @@ export class InvoiceSentToLogistics extends IdEntity {
     @Field({ caption: 'סכום' })
     amount: number = 0;
     @DataControl({ width: '200' })
-    @Field({ allowApiUpdate: false, caption: 'שודר' })
+    @Field({
+        allowApiUpdate: false, caption: 'שודר', displayValue: (_, d) => {
+            let offset = d.getTimezoneOffset();
+            return new Date(d.valueOf() + offset * 60 * 1000).toLocaleString();
+            //d.toLocaleDateString();
+        }
+    })
     transmitDate: Date = new Date();
     @Field({ caption: 'סטטוס' })
     status: string = '';
