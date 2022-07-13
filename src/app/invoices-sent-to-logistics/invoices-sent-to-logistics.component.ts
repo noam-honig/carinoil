@@ -17,6 +17,7 @@ export class InvoicesSentToLogisticsComponent implements OnInit {
   constructor(private remult: Remult, private dialog: DialogService) { }
   grid = new GridSettings(this.remult.repo(InvoiceSentToLogistics), {
     numOfColumnsInGrid: 1000,
+    rowsInPage:100,
     knowTotalRows: true,
     gridButtons: [{
       name: 'סטטוס תקשורת',
