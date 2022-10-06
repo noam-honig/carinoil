@@ -12,6 +12,7 @@
     "dev-ng": "ng serve  --proxy-config proxy.conf.json",
     "dev-node": "ts-node-dev --project tsconfig.server.json src/server/",
     "dev-sync": "ts-node --project tsconfig.server.json src/server/sync",
+    "dev-yosef": "ts-node --project tsconfig.server.json src/server/yosef",
     "sync":"node dist/server/server/sync"
   },
   "private": true,
