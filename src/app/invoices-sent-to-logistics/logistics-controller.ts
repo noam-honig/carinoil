@@ -45,6 +45,8 @@ export class LogisticsController {
                     progress.progress(counter / result.document_list.length);
                 let i = await repo.findFirst({ where: x => x.documentNumber.isEqualTo(d.document_number).and(x.documentType.isEqualTo(d.document_type)), createIfNotFound: true })
                 if (i.isNew()) {
+                    // for each new document - create pdf and send to orian
+
                     console.log((counter * 100 / result.document_list.length).toFixed() + "% processing new " + i.documentType + "/" + i.documentNumber + " - " + d.document_date);
                     i.transmitDate = new Date();
                     let sp = d.document_date.split('/');
@@ -63,6 +65,8 @@ export class LogisticsController {
                         console.log(error);
                     }
                     await i.save();
+
+                    //send email
                 }
             }
             log.status = 'ok';
