@@ -12,6 +12,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
 
   if (!customer?.email) {
     console.log("no email", { documentNumber, documentType, customerName: customer.name })
+    return;
   }
   // return;
 
