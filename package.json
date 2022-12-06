@@ -86,6 +86,7 @@
     "ftp": false,
     "jsonwebtoken": false,
     "password-hash": false,
-    "node-fetch": false
+    "node-fetch": false,
+    "nodemailer": false
   }
 }
