@@ -8,6 +8,7 @@ import { createOrianOutGoingMessage } from "./orian-outgoing-message";
 import { getDocumentDetailsFromRivhit } from "./rivhit-document-details";
 import { sendDataToFtp } from "./sendFtp";
 import { DateOnlyValueConverter } from 'remult/valueConverters';
+import { sendMail } from "../../server/sendMail";
 
 let running = false;
 export class LogisticsController {
@@ -38,7 +39,7 @@ export class LogisticsController {
             let counter = 0;
             let newItems = 0;
             const repo = remult!.repo(InvoiceSentToLogistics);
-            const types = [1,2,4,11];
+            const types = [1, 2, 4, 11];
             for (const d of result.document_list.filter(d => types.includes(d.document_type))) {
                 counter++;
                 if (progress)
@@ -56,8 +57,9 @@ export class LogisticsController {
                     try {
                         newItems++;
                         const o = await LogisticsController.createXml(d.document_type, d.document_number);
-                        await sendDataToFtp(o.xml, 'IN/'+o.filename);
+                        await sendDataToFtp(o.xml, 'IN/' + o.filename);
                         i.status = "ok";
+                        await sendMail(d.document_number, d.document_type);
 
                     }
                     catch (error) {
@@ -65,8 +67,6 @@ export class LogisticsController {
                         console.log(error);
                     }
                     await i.save();
-
-                    //send email
                 }
             }
             log.status = 'ok';

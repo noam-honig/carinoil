@@ -1,15 +1,18 @@
 import * as nodemailer from 'nodemailer';
 
 import { getDocumentDetailsFromRivhit } from '../app/invoices-sent-to-logistics/rivhit-document-details';
-import {CustomerStatusComponent} from '../app/customer-status/customer-status.component';
+import { CustomerStatusComponent } from '../app/customer-status/customer-status.component';
 import { callRivhit } from '../app/create-invoice/invoice';
 
 export async function sendMail(documentNumber: number, documentType: number) {
-  const { EMAIL_ADDRESS, EMAIL_PASSWORD} = process.env;
-  const link = await CustomerStatusComponent.openDocument(documentType,documentNumber);
-  const details = await getDocumentDetailsFromRivhit(documentType,documentNumber);
-  const customer =  await callRivhit("Customer.Get", { customer_id: details.customer_id });
-  console.log({ documentNumber, documentType,link ,details,customer});
+  const { EMAIL_ADDRESS, EMAIL_PASSWORD } = process.env;
+  const link = await CustomerStatusComponent.openDocument(documentType, documentNumber);
+  const details = await getDocumentDetailsFromRivhit(documentType, documentNumber);
+  const customer = await callRivhit("Customer.Get", { customer_id: details.customer_id });
+
+  if (!customer?.email) {
+    console.log("no email", { documentNumber, documentType, customerName: customer.name })
+  }
   // return;
 
   // do you :)
@@ -23,7 +26,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
     <h4 style="text-align: center">  אינך יכול/ה לשלוח מייל בחזרה לכתובת זו.  </h4>
     </div>
     `
-  
+
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -33,16 +36,16 @@ export async function sendMail(documentNumber: number, documentType: number) {
       pass: EMAIL_PASSWORD
     }
   });
-  
+
   const mailOptions = {
     from: EMAIL_ADDRESS,
-    to: [customer.email],
+    to: [process.env['TEST_EMAIL'] || customer.email],
     subject: 'Invoicing',
     text: 'invoicing',
     html: output
   };
-  
-  transporter.sendMail(mailOptions, (error, info)=>{
+
+  transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error);
     } else {
