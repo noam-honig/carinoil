@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "node dist/server/server/",
     "build": "ng build && tsc -p tsconfig.server.json",
-    "build-sync":"tsc -p tsconfig.server.json",
+    "build-sync": "tsc -p tsconfig.server.json",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -13,7 +13,7 @@
     "dev-node": "ts-node-dev --project tsconfig.server.json src/server/",
     "dev-sync": "ts-node --project tsconfig.server.json src/server/sync",
     "dev-yosef": "ts-node --project tsconfig.server.json src/server/yosef",
-    "sync":"node dist/server/server/sync"
+    "sync": "node dist/server/server/sync"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +40,7 @@
     "jsonwebtoken": "^8.5.1",
     "ng2-charts": "^2.4.2",
     "node-fetch": "^2.6.5",
+    "nodemailer": "^6.8.0",
     "password-hash": "^1.2.2",
     "pg": "^8.3.0",
     "reflect-metadata": "^0.1.12",
@@ -60,6 +61,7 @@
     "@types/jasmine": "~3.6.0",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^12.11.1",
+    "@types/nodemailer": "^6.4.6",
     "@types/password-hash": "^1.2.20",
     "@types/pg": "^7.14.4",
     "@types/xml": "^1.0.8",
