@@ -54,8 +54,3 @@ export async function sendMail(documentNumber: number, documentType: number) {
     }
   });
 }
-
-//TODO - get an email working. - sales@carino.co.il.
-//TODO - Decide with rami on the email text - link for now.
-//TODO - decide with rami if to send the link is enough or if required to download and send as attachkemnt - link for now.
-//TODO - Decide with rami how do you get the email address to send the email to. - getDocumentDetailsFromRivhit.
