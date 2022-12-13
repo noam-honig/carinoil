@@ -5,24 +5,26 @@ import { CustomerStatusComponent } from '../app/customer-status/customer-status.
 import { callRivhit } from '../app/create-invoice/invoice';
 
 export async function sendMail(documentNumber: number, documentType: number) {
-  const { EMAIL_ADDRESS, EMAIL_PASSWORD } = process.env;
+  const { STORAGE_ROOM_EMAIL_ADDRESS, EMAIL_ADDRESS, EMAIL_PASSWORD } = process.env;
   const link = await CustomerStatusComponent.openDocument(documentType, documentNumber);
   const details = await getDocumentDetailsFromRivhit(documentType, documentNumber);
   const customer = await callRivhit("Customer.Get", { customer_id: details.customer_id });
 
-  if (!customer?.email) {
-    console.log("no email", { documentNumber, documentType, customerName: customer.name })
-    return;
-  }
-  // return;
-
-  // do you :)
-
-  const output = `
-  <div style="text-align: center;background:#f3f1f1;border-radius: 7px;">
-    <h2 style="box-shadow: 10px 10px 8px 10px gray;text-align: center;">היי ${customer.last_name}</h2>
-    <h4 style="text-align: center"> לינק לחשבונית: </h4>
-        <a href=${link}> חשבונית </a>
+  const clientOutput = `
+  <div style="direction: rtl;text-align: center;background:#f3f1f1;border-radius: 7px;">
+    <h2 style="box-shadow: 10px 10px 8px 10px gray;text-align: center;"> שלום.</h2>
+    <h4 style="text-align: center">מצורף לינק לחשבונית של חברת קארינו קידס בע"מ.</h4>
+    <a href=${link} download> להורדת המסמך: Invoicing </a>
+    <h3 style="text-align: center"> שים לב </h3>
+    <h4 style="text-align: center">  אינך יכול/ה לשלוח מייל בחזרה לכתובת זו.  </h4>
+    </div>
+    `
+ 
+    const storageRoomOutput = `
+  <div style="direction: rtl;text-align: center;background:#f3f1f1;border-radius: 7px;">
+    <h2 style="box-shadow: 10px 10px 8px 10px gray;text-align: center;"> שלום.</h2>
+    <h4 style="text-align: center">מצורפת חשבונית קרינו קידס, מספר הזמנה: ${details.document_number}.</h4>
+    <a href=${link} download> להורדת המסמך: Invoicing </a>
     <h3 style="text-align: center"> שים לב </h3>
     <h4 style="text-align: center">  אינך יכול/ה לשלוח מייל בחזרה לכתובת זו.  </h4>
     </div>
@@ -38,19 +40,40 @@ export async function sendMail(documentNumber: number, documentType: number) {
     }
   });
 
-  const mailOptions = {
+  transporter.sendMail({
     from: EMAIL_ADDRESS,
-    to: [process.env['TEST_EMAIL'] || customer.email],
-    subject: 'Invoicing',
+    to: STORAGE_ROOM_EMAIL_ADDRESS,
+    subject: 'חשבונית מקרינו קידס.',
     text: 'invoicing',
-    html: output
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
+    html: storageRoomOutput
+  },
+    (error, info) => {
     if (error) {
       console.log(error);
     } else {
-      console.log('Email sent: ' + info.response);
+      console.log('Email sent to storage room: ' + info.response);
     }
   });
+  
+  if (documentType === 1 && customer?.email) {
+    transporter.sendMail({
+      from: EMAIL_ADDRESS,
+      to: customer.email,
+      subject: 'חשבונית מקרינו קידס.',
+      text: 'invoicing',
+      html: clientOutput
+    },
+      (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent to client: ' + info.response);
+      }
+    });   
+  }else{
+    let noEmailText = `The user: ${customer?.first_name} does not have email.`;
+    let noDocumentTypeText = `The document type is not 1.`;
+    console.log(`${documentType === 1 ? noEmailText : noDocumentTypeText}`);
+  }
+
 }
