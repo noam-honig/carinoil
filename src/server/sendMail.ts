@@ -40,23 +40,14 @@ export async function sendMail(documentNumber: number, documentType: number) {
     }
   });
 
-  const mailOptionsClient = {
-    from: EMAIL_ADDRESS,
-    to: customer.email,
-    subject: 'Invoicing',
-    text: 'invoicing',
-    html: clientOutput
-  };
- 
-  const mailOptionsStorageRoom = {
+  transporter.sendMail({
     from: EMAIL_ADDRESS,
     to: STORAGE_ROOM_EMAIL_ADDRESS,
-    subject: 'Invoicing',
+    subject: 'חשבונית מקרינו קידס.',
     text: 'invoicing',
     html: storageRoomOutput
-  };
-
-  transporter.sendMail(mailOptionsStorageRoom, (error, info) => {
+  },
+    (error, info) => {
     if (error) {
       console.log(error);
     } else {
@@ -65,7 +56,14 @@ export async function sendMail(documentNumber: number, documentType: number) {
   });
   
   if (documentType === 1 && customer?.email) {
-    transporter.sendMail(mailOptionsClient, (error, info) => {
+    transporter.sendMail({
+      from: EMAIL_ADDRESS,
+      to: customer.email,
+      subject: 'חשבונית מקרינו קידס.',
+      text: 'invoicing',
+      html: clientOutput
+    },
+      (error, info) => {
       if (error) {
         console.log(error);
       } else {
