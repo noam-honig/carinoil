@@ -9,16 +9,21 @@ export async function sendMail(documentNumber: number, documentType: number) {
   const link = await CustomerStatusComponent.openDocument(documentType, documentNumber);
   const details = await getDocumentDetailsFromRivhit(documentType, documentNumber);
   const customer = await callRivhit("Customer.Get", { customer_id: details.customer_id });
-  
-  if (!customer?.email) {
-    console.log("no email", { documentNumber, documentType, customerName: customer.name })
-    return;
-  }
 
-  const output = `
+  const clientOutput = `
   <div style="direction: rtl;text-align: center;background:#f3f1f1;border-radius: 7px;">
     <h2 style="box-shadow: 10px 10px 8px 10px gray;text-align: center;"> שלום.</h2>
-    <h4 style="text-align: center"> מצורף לינק לחשבונית של חברת קארינו קידס בע"מ. </h4>
+    <h4 style="text-align: center">מצורף לינק לחשבונית של חברת קארינו קידס בע"מ.</h4>
+    <a href=${link} download> להורדת המסמך: Invoicing </a>
+    <h3 style="text-align: center"> שים לב </h3>
+    <h4 style="text-align: center">  אינך יכול/ה לשלוח מייל בחזרה לכתובת זו.  </h4>
+    </div>
+    `
+ 
+    const storageRoomOutput = `
+  <div style="direction: rtl;text-align: center;background:#f3f1f1;border-radius: 7px;">
+    <h2 style="box-shadow: 10px 10px 8px 10px gray;text-align: center;"> שלום.</h2>
+    <h4 style="text-align: center">מצורפת חשבונית קרינו קידס, מספר הזמנה: ${details.document_number}.</h4>
     <a href=${link} download> להורדת המסמך: Invoicing </a>
     <h3 style="text-align: center"> שים לב </h3>
     <h4 style="text-align: center">  אינך יכול/ה לשלוח מייל בחזרה לכתובת זו.  </h4>
@@ -40,7 +45,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
     to: customer.email,
     subject: 'Invoicing',
     text: 'invoicing',
-    html: output
+    html: clientOutput
   };
  
   const mailOptionsStorageRoom = {
@@ -48,7 +53,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
     to: STORAGE_ROOM_EMAIL_ADDRESS,
     subject: 'Invoicing',
     text: 'invoicing',
-    html: output
+    html: storageRoomOutput
   };
 
   transporter.sendMail(mailOptionsStorageRoom, (error, info) => {
@@ -59,7 +64,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
     }
   });
   
-  if (documentType === 1) {
+  if (documentType === 1 && customer?.email) {
     transporter.sendMail(mailOptionsClient, (error, info) => {
       if (error) {
         console.log(error);
@@ -67,6 +72,10 @@ export async function sendMail(documentNumber: number, documentType: number) {
         console.log('Email sent to client: ' + info.response);
       }
     });   
+  }else{
+    let noEmailText = `The user: ${customer?.first_name} does not have email.`;
+    let noDocumentTypeText = `The document type is not 1.`;
+    console.log(`${documentType === 1 ? noEmailText : noDocumentTypeText}`);
   }
 
 }
