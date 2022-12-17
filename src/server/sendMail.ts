@@ -10,14 +10,14 @@ export async function sendMail(documentNumber: number, documentType: number) {
   const link = await CustomerStatusComponent.openDocument(documentType, documentNumber);
   const details = await getDocumentDetailsFromRivhit(documentType, documentNumber);
   const customer = await callRivhit("Customer.Get", { customer_id: details.customer_id });
-
+  
   const log = (what: any) => report.log(`${documentType}-${documentNumber}: ${what}`)
 
   const clientOutput = `
   <div style="direction: rtl;text-align: center;background:#f3f1f1;border-radius: 7px;">
     <h2 style="box-shadow: 10px 10px 8px 10px gray;text-align: center;"> שלום ${customer.first_name} ${customer.last_name}.</h2>
-    <h4 style="text-align: center">מצורף לינק לחשבונית של חברת קרינו קידס בע"מ.</h4>
-    <a href=${link} download style="font-weight: bolder;font-size: 20px">להורדת המסמך ל-pdf, לחץ כאן.</a>
+    <h4 style="text-align: center">מצורף לינק ל${details.document_type} של חברת קרינו קידס בע"מ.</h4>
+    <a href=${link} download style="font-weight: bolder;font-size: 20px">להורדת ה${details.document_type} ל-pdf, לחץ כאן.</a>
     <h3 style="text-align: center"> שים לב </h3>
     <h4 style="text-align: center">  אינך יכול/ה לשלוח מייל בחזרה לכתובת זו.  </h4>
     </div>
@@ -26,8 +26,8 @@ export async function sendMail(documentNumber: number, documentType: number) {
   const storageRoomOutput = `
   <div style="direction: rtl;text-align: center;background:#f3f1f1;border-radius: 7px;">
     <h2 style="box-shadow: 10px 10px 8px 10px gray;text-align: center;"> שלום.</h2>
-    <h4 style="text-align: center">מצורפת חשבונית קרינו קידס, מספר הזמנה: ${details.document_number}.</h4>
-    <a href=${link} download style="font-weight: bolder;font-size: 20px">להורדת המסמך ל-pdf, לחץ כאן.</a>
+    <h4 style="text-align: center">מצורפת ${details.document_type} מקרינו קידס, מספר ה${details.document_type}: ${details.document_number}.</h4>
+    <a href=${link} download style="font-weight: bolder;font-size: 20px">להורדת ה${details.document_type} ל-pdf, לחץ כאן.</a>
     <h3 style="text-align: center"> שים לב </h3>
     <h4 style="text-align: center">  אינך יכול/ה לשלוח מייל בחזרה לכתובת זו.  </h4>
     </div>
@@ -46,7 +46,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
   transporter.sendMail({
     from: EMAIL_ADDRESS,
     to: STORAGE_ROOM_EMAIL_ADDRESS,
-    subject: 'חשבונית מקרינו קידס.',
+    subject: `מסמך מספר ${details.document_number} מקרינו קידס.`,
     text: 'invoicing',
     html: storageRoomOutput
   },
@@ -62,7 +62,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
     transporter.sendMail({
       from: EMAIL_ADDRESS,
       to: customer.email,
-      subject: 'חשבונית מקרינו קידס.',
+      subject: `מסמך מספר ${details.document_number} מקרינו קידס.`,
       text: 'invoicing',
       html: clientOutput
     },
