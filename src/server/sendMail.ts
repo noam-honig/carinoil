@@ -46,7 +46,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
   transporter.sendMail({
     from: EMAIL_ADDRESS,
     to: STORAGE_ROOM_EMAIL_ADDRESS,
-    subject: `מסמך מספר ${details.document_number} מקרינו קידס.`,
+    subject: `${details.document_type} מספר ${details.document_number} מקרינו קידס.`,
     text: 'invoicing',
     html: storageRoomOutput
   },
@@ -62,7 +62,7 @@ export async function sendMail(documentNumber: number, documentType: number) {
     transporter.sendMail({
       from: EMAIL_ADDRESS,
       to: customer.email,
-      subject: `מסמך מספר ${details.document_number} מקרינו קידס.`,
+      subject: `${details.document_type} מספר ${details.document_number} מקרינו קידס.`,
       text: 'invoicing',
       html: clientOutput
     },
