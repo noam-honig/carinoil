@@ -31,6 +31,8 @@ import { CustomersComponent } from './customers/customers.component';
 import { CreateInvoiceComponent } from './create-invoice/create-invoice.component';
 import { CustomerStatusComponent } from './customer-status/customer-status.component';
 import { InvoicesSentToLogisticsComponent } from './invoices-sent-to-logistics/invoices-sent-to-logistics.component';
+import { SuperPharmOrdersComponent } from './super-pharm-orders/super-pharm-orders.component';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { InvoicesSentToLogisticsComponent } from './invoices-sent-to-logistics/i
     CustomersComponent,
     CreateInvoiceComponent,
     CustomerStatusComponent,
-    InvoicesSentToLogisticsComponent
+    InvoicesSentToLogisticsComponent,
+    SuperPharmOrdersComponent
   ],
   imports: [
     ChartsModule,
@@ -65,7 +68,8 @@ import { InvoicesSentToLogisticsComponent } from './invoices-sent-to-logistics/i
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    RemultModule
+    RemultModule,
+    HttpClientModule
   ],
   providers: [DialogService, AdminGuard],
   bootstrap: [AppComponent],
