@@ -1,8 +1,7 @@
 import { Remult } from "remult";
 import { callRivhit, RivhitDocument } from "../app/create-invoice/invoice";
 import { getDataProvider } from "./getDataProvider";
-import { sendMail } from "./sendMail";
-import { callSuperPharm, checkForNewOrdersOnSuperpharm } from "./superPhramOrders";
+import { checkForNewOrdersOnSuperpharm } from "./superPhramOrders";
 
 getDataProvider().then(async dp => {
   const remult = new Remult();
@@ -14,12 +13,13 @@ getDataProvider().then(async dp => {
     to_document_type: 11
 
 });
-// console.log(result);
-// await sendMail(98, 1);
 
-  // const data  = await callSuperPharm("/api/orders")
-  // console.log("data: ", data);
   checkForNewOrdersOnSuperpharm(remult).then(x => {
-    console.log("Hii")
+    if (x) {
+      console.log("x:", x)
+    }else{
+      console.log("there are no new orders.");
+      
+    }
   })
 });
