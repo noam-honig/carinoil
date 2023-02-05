@@ -110,7 +110,7 @@ export async function checkForNewOrdersOnSuperpharm(
         i.transmitDate = new Date();
         const date = new Date(d.created_date);
         i.orderDate = date;
-        i.customerName = d.customer.firstname;
+        i.customerName = d.customer.firstname + " " + d.customer.lastname;
         i.amount = d.total_price;
         try {
           newItems++;
