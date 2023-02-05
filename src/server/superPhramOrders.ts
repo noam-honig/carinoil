@@ -90,19 +90,13 @@ export async function checkForNewOrdersOnSuperpharm(
 
   log.lastRun = new Date();
   try {
-    let lastDate = new Date();
-    lastDate.setMonth(lastDate.getMonth() - 1);
-    {
-      let last = await remult.repo(OrdersSentToRivhit).findFirst({});
-      if (last) lastDate = last.orderDate;
-    }
-    const result = await callSuperPharm("/api/orders?paginate=false");
+    const result = await callSuperPharm("/api/orders?paginate=false&order_state_codes=SHIPPING");
 
     let counter = 0;
     let newItems = 0;
     const repo = remult!.repo(OrdersSentToRivhit);
 
-    for (const d of result.filter((d) => d.order_state.includes("SHIPPING"))) {
+    for (const d of result) {
       counter++;
 
       if (progress) progress.progress(counter / result.length);
@@ -121,7 +115,7 @@ export async function checkForNewOrdersOnSuperpharm(
         try {
           newItems++;
 
-          let items = d.order_lines.filter((d) => d.order_line_state.includes("SHIPPING")).map((d) => ({
+          let items = d.order_lines.filter((d) => d.order_line_state === "SHIPPING").map((d) => ({
               quantity: d.quantity,
               catalog_number: d.product_sku,
               price_nis: d.price_unit,
@@ -145,9 +139,10 @@ export async function checkForNewOrdersOnSuperpharm(
             order: i.order_id,
             last_name: "לקוחות סופר פארם",
             first_name: `${d.customer.firstname + " " + d.customer.lastname}`,
-            phone: d.customer.billing_address.phone,
-            address: d.customer.billing_address.street_1,
-            city: d.customer.billing_address.city,
+            phone: d.customer.shipping_address.phone,
+            address: d.customer.shipping_address.street_1,
+            comments:d.customer.shipping_address.street_2,
+            city: d.customer.shipping_address.city,
             price_include_vat: true,
             items,
           };
