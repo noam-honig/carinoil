@@ -35,6 +35,10 @@ export async function callSuperPharm(api: string) {
   ],
 })
 export class OrdersSentToRivhit extends IdEntity {
+  @DataControl({ width: '60' })
+  @Field({ caption: '#' })
+  documentNumber: number = 0;
+
   @DataControl({ width: "100" })
   @DateOnlyField({
     caption: "תאריך",
@@ -101,8 +105,8 @@ export async function checkForNewOrdersOnSuperpharm(
 
       if (progress) progress.progress(counter / result.length);
       let i = await repo.findFirst({where: (x) => x.order_id.isEqualTo(d.order_id),createIfNotFound: true,});
-
-      if (i.isNew()) {
+      
+      if (i.isNew()) {      
         // for each new order - create invoice and send to rivhit.
 
         const { API_KEY, SUPERPHARMID } = process.env;
@@ -117,7 +121,7 @@ export async function checkForNewOrdersOnSuperpharm(
 
           let items = d.order_lines.filter((d) => d.order_line_state === "SHIPPING").map((d) => ({
               quantity: d.quantity,
-              catalog_number: d.product_sku,
+              catalog_number: d.offer_sku,
               price_nis: d.price_unit,
               description: d.product_title,
             }));
@@ -146,7 +150,8 @@ export async function checkForNewOrdersOnSuperpharm(
             price_include_vat: true,
             items,
           };
-          await callRivhit("Document.New", req);
+          const invoiceData = await callRivhit("Document.New", req);
+          i.documentNumber = invoiceData.document_number;
           i.status = "ok";
         } catch (error) {
           i.status = error;
