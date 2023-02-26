@@ -10,15 +10,15 @@ report.log = what => fs.appendFileSync('./db/log.log', what + '\n');
 getDataProvider().then(async dp => {
     const remult = new Remult();
     remult.setDataProvider(dp);
+    if (false)
+        await checkForNewOrdersOnSuperpharm(remult).then(x => {
+            if (x) {
+                report.log("superpharm sync:" + JSON.stringify(x))
+            } else {
+                report.log("there are no new orders from superpharm.");
 
-    await checkForNewOrdersOnSuperpharm(remult).then(x => {
-        if (x) {
-            report.log("superpharm sync:" + JSON.stringify(x))
-        } else {
-            report.log("there are no new orders from superpharm.");
-
-        }
-    })
+            }
+        })
 
     await LogisticsController.checkForNewInvoices(remult).then(x => {
 
