@@ -10,7 +10,7 @@ report.log = what => fs.appendFileSync('./db/log.log', what + '\n');
 getDataProvider().then(async dp => {
     const remult = new Remult();
     remult.setDataProvider(dp);
-    if (false)
+    if (true)
         await checkForNewOrdersOnSuperpharm(remult).then(x => {
             if (x) {
                 report.log("superpharm sync:" + JSON.stringify(x))
@@ -24,5 +24,5 @@ getDataProvider().then(async dp => {
 
         report.log(`${new Date().toLocaleString()} items: ${x.newItems}\n`);
     });
-})
+}).catch(error=>report.log(error));
 
