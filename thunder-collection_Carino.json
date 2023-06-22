@@ -1,0 +1,28 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Carino",
+    "dateExported": "2023-06-22T10:37:20.581Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "27bb6aa5-883e-4710-a900-cd83859728ab",
+            "colId": "bbd2c5c9-3ee1-4caa-97e2-7c982f67da6d",
+            "containerId": "",
+            "name": "Document.List",
+            "url": "https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Document.List",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-06-22T10:34:42.212Z",
+            "modified": "2023-06-22T10:34:42.212Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"api_token\": \"{{API_KEY}}\",\n  \"from_date\": \"20-06-2023\",\n  \"to_date\": \"22-06-2023\",\n  \"from_document_type\": 1,\n  \"to_document_type\": 11\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}
